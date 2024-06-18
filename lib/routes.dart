@@ -1,7 +1,9 @@
 import 'package:allnimall_web/app/order/customer/personal_information_page.dart';
 import 'package:allnimall_web/app/json/get_json_page.dart';
+import 'package:allnimall_web/app/order/customer/personal_location_page.dart';
 import 'package:allnimall_web/app/order/new_order_page.dart';
 import 'package:allnimall_web/app/order/pet_categories_page.dart';
+import 'package:allnimall_web/app/order/schedule/grooming_schedule_page.dart';
 import 'package:allnimall_web/app/order/services_page.dart';
 import 'package:allnimall_web/src/core/injections/application_module.dart';
 import 'package:allnimall_web/src/data/blocs/cart/cart_bloc.dart';
@@ -57,9 +59,21 @@ final GoRouter router = GoRouter(
           ],
         ),
         GoRoute(
-          name: 'phoneAuth',
-          path: 'phone/auth',
+          name: 'customerInformation',
+          path: 'customer/info',
           builder: (ctx, state) => const PersonalInformationPage(),
+          routes: [
+            GoRoute(
+              name: 'customerLocation',
+              path: 'location',
+              builder: (ctx, state) => const PersonalLocationPage(),
+            ),
+          ],
+        ),
+        GoRoute(
+          name: 'groomingSchedule',
+          path: 'schedule',
+          builder: (ctx, state) => const GroomingSchedulePage(),
         ),
       ],
     ),

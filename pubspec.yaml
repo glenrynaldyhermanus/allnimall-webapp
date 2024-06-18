@@ -56,11 +56,13 @@ dependencies:
   json_annotation: ^4.8.1
   logger: ^2.1.0
   provider: ^6.1.1
+  scroll_date_picker: ^3.8.0
   seo_renderer: ^0.6.0
   shared_preferences: ^2.2.2
   sticky_headers: ^0.3.0+2
   styled_divider: ^1.0.5
   url_strategy: ^0.2.0
+
 
 
 

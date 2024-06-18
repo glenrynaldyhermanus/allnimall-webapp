@@ -22,7 +22,7 @@ class GeoramaText extends StatelessWidget {
     return TextRenderer(
       child: Text(
         text,
-        maxLines: 2,
+        maxLines: 3,
         overflow: TextOverflow.ellipsis,
         style: GoogleFonts.georama(
           textStyle: TextStyle(

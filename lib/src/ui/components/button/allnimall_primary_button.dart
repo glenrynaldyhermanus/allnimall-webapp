@@ -10,6 +10,7 @@ class AllnimallPrimaryButton extends StatefulWidget {
     this.height = 44,
     this.width = double.infinity,
     this.radius = 8,
+    required this.onPressed,
   }) : super(key: key);
 
   final EdgeInsets outsidePadding;
@@ -17,6 +18,7 @@ class AllnimallPrimaryButton extends StatefulWidget {
   final double width;
   final double radius;
   final String text;
+  final Function onPressed;
 
   @override
   State<AllnimallPrimaryButton> createState() => _AllnimallPrimaryButtonState();
@@ -31,7 +33,9 @@ class _AllnimallPrimaryButtonState extends State<AllnimallPrimaryButton> {
         height: widget.height,
         width: widget.width,
         child: FilledButton(
-          onPressed: () {},
+          onPressed: () {
+            widget.onPressed();
+          },
           style: FilledButton.styleFrom(
             backgroundColor: AllnimallColors.primary,
             shape: RoundedRectangleBorder(

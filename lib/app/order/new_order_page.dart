@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:allnimall_web/src/core/extensions/double_ext.dart';
 import 'package:allnimall_web/src/core/extensions/widget_iterable_ext.dart';
 import 'package:allnimall_web/src/core/utils/functions/count_carts_service_amount.dart';
@@ -8,6 +6,7 @@ import 'package:allnimall_web/src/data/blocs/cart/cart_bloc.dart';
 import 'package:allnimall_web/src/data/blocs/cart/cart_event.dart';
 import 'package:allnimall_web/src/data/blocs/cart/cart_state.dart';
 import 'package:allnimall_web/src/data/models/order_service.dart';
+import 'package:allnimall_web/src/data/objects/personal_information.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
 import 'package:allnimall_web/src/ui/res/colors.dart';
@@ -41,7 +40,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
                 ...[
                   const InformationCard(),
                   const ServiceCard(),
-                  const CustomerCard()
+                  const CustomerCard(),
+                  const ScheduleCard(),
                 ].divide(const Gap(8)),
               ],
             ),
@@ -259,8 +259,76 @@ class ServiceCard extends StatelessWidget {
   }
 }
 
-class CustomerCard extends StatelessWidget {
+class CustomerCard extends StatefulWidget {
   const CustomerCard({
+    super.key,
+  });
+
+  @override
+  State<CustomerCard> createState() => _CustomerCardState();
+}
+
+class _CustomerCardState extends State<CustomerCard> {
+  PersonalInformation? personalInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        context.pushNamed('customerInformation').then((value) => setState(() {
+              if (value != null && value is PersonalInformation) {
+                personalInfo = value;
+              }
+            }));
+      },
+      child: Card(
+        color: Colors.white,
+        surfaceTintColor: Colors.white,
+        margin: EdgeInsets.zero,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+        ),
+        elevation: 4,
+        shadowColor: Colors.black26,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Expanded(
+                    child: GeoramaText(
+                      'Informasi personal',
+                      fontSize: 16,
+                    ),
+                  ),
+                  Gap(16),
+                  Icon(Icons.chevron_right)
+                ],
+              ),
+              if (personalInfo != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GeoramaText(personalInfo!.name),
+                      GeoramaText('0${personalInfo!.phone}'),
+                      GeoramaText(personalInfo!.location.address),
+                    ],
+                  ),
+                )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ScheduleCard extends StatelessWidget {
+  const ScheduleCard({
     super.key,
   });
 
@@ -268,9 +336,7 @@ class CustomerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context
-            .pushNamed('phoneAuth')
-            .then((value) => context.read<CartBloc>().add(CheckCartEvent()));
+        context.pushNamed('groomingSchedule');
       },
       child: const Card(
         color: Colors.white,
@@ -287,7 +353,7 @@ class CustomerCard extends StatelessWidget {
             children: [
               Expanded(
                 child: GeoramaText(
-                  'Informasi personal',
+                  'Jadwal grooming',
                   fontSize: 16,
                 ),
               ),

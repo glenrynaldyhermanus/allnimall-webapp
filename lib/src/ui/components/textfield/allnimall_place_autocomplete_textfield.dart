@@ -8,16 +8,18 @@ import 'package:google_places_autocomplete_text_field/google_places_autocomplete
 
 class AllnimallPlaceAutoCompleteTextField extends StatefulWidget {
   final String label;
-  final bool? enabled;
+  final bool enabled;
   final String? hint;
   final String? errorMessage;
   final Function(String? val) onChanged;
+  final bool autofocus;
 
   const AllnimallPlaceAutoCompleteTextField(
     this.label, {
     super.key,
     this.hint,
     this.enabled = true,
+    this.autofocus = false,
     this.errorMessage,
     required this.onChanged,
   });
@@ -78,16 +80,15 @@ class _AllnimallPlaceAutoCompleteTextFieldState
                 countries: const ["id"],
                 isLatLngRequired: true,
                 getPlaceDetailWithLatLng: (prediction) {
-                  widget.onChanged('${prediction.lat},${prediction.lng}');
+                  widget.onChanged('${prediction.lat}||${prediction.lng}||${prediction.description}');
                 },
                 itmClick: (prediction) {
                   _controller.text = prediction.description!;
                   _controller.selection = TextSelection.fromPosition(
                       TextPosition(offset: prediction.description!.length));
                 },
-                onChanged: widget.onChanged,
                 enabled: widget.enabled,
-                autofocus: false,
+                autofocus: widget.autofocus,
                 focusNode: _focusNode,
                 cursorColor: AllnimallColors.primary,
                 style: GoogleFonts.georama(

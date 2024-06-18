@@ -88,8 +88,7 @@ class _AllnimallTextFieldState extends State<AllnimallTextField> {
                 ),
                 decoration: InputDecoration(
                   hintText: widget.hint,
-                  hintStyle: TextStyle(
-                      fontSize: 16, color: Colors.grey[500]),
+                  hintStyle: TextStyle(fontSize: 16, color: Colors.grey[500]),
                   isDense: true,
                   contentPadding: EdgeInsets.zero,
                   border: InputBorder.none,

@@ -16,6 +16,6 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 - Do : flutter pub get
-- To generate router : dart run routefly --watch
+#- To generate router : dart run routefly --watch 
 - Build : flutter build web --web-renderer canvaskit --no-tree-shake-icons
 - Deploy : firebase deploy --only hosting:order-allnimall
