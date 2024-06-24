@@ -6,6 +6,7 @@ import 'package:allnimall_web/src/data/blocs/cart/cart_bloc.dart';
 import 'package:allnimall_web/src/data/blocs/cart/cart_event.dart';
 import 'package:allnimall_web/src/data/blocs/cart/cart_state.dart';
 import 'package:allnimall_web/src/data/models/order_service.dart';
+import 'package:allnimall_web/src/data/objects/grooming_schedule.dart';
 import 'package:allnimall_web/src/data/objects/personal_information.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:styled_divider/styled_divider.dart';
 
 class NewOrderPage extends StatefulWidget {
@@ -327,38 +329,69 @@ class _CustomerCardState extends State<CustomerCard> {
   }
 }
 
-class ScheduleCard extends StatelessWidget {
+class ScheduleCard extends StatefulWidget {
   const ScheduleCard({
     super.key,
   });
 
   @override
+  State<ScheduleCard> createState() => _ScheduleCardState();
+}
+
+class _ScheduleCardState extends State<ScheduleCard> {
+  GroomingSchedule? groomingSchedule;
+
+  @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.pushNamed('groomingSchedule');
+        context.pushNamed('groomingSchedule').then(
+              (value) => setState(
+                () {
+                  if (value != null && value is GroomingSchedule) {
+                    groomingSchedule = value;
+                  }
+                },
+              ),
+            );
       },
-      child: const Card(
+      child:  Card(
         color: Colors.white,
         surfaceTintColor: Colors.white,
         margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.zero,
         ),
         elevation: 4,
         shadowColor: Colors.black26,
         child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Row(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: GeoramaText(
-                  'Jadwal grooming',
-                  fontSize: 16,
-                ),
+              const Row(
+                children: [
+                  Expanded(
+                    child: GeoramaText(
+                      'Jadwal grooming',
+                      fontSize: 16,
+                    ),
+                  ),
+                  Gap(16),
+                  Icon(Icons.chevron_right)
+                ],
               ),
-              Gap(16),
-              Icon(Icons.chevron_right)
+              if (groomingSchedule != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GeoramaText(DateFormat('EEEE, dd MMM').format(groomingSchedule!.date)),
+                      GeoramaText(groomingSchedule!.time),
+                    ],
+                  ),
+                )
             ],
           ),
         ),
