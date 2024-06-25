@@ -6,7 +6,11 @@ import 'package:get_it/get_it.dart';
 
 void initBlocModule(GetIt locator) {
   locator.registerFactory(
-    () => CartBloc(addServiceToCart: locator(), getCart: locator()),
+    () => CartBloc(
+      addServiceToCart: locator(),
+      getCart: locator(),
+      clearCart: locator(),
+    ),
   );
   locator.registerFactory(
     () => CategoryBloc(

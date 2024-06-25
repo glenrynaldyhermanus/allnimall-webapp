@@ -35,6 +35,9 @@ class _AllnimallPlaceAutoCompleteTextFieldState
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
 
+
+  var proxyUrl = "http://cors-anywhere.herokuapp.com/";
+
   @override
   void initState() {
     super.initState();
@@ -76,12 +79,15 @@ class _AllnimallPlaceAutoCompleteTextFieldState
               GooglePlacesAutoCompleteTextFormField(
                 textEditingController: _controller,
                 googleAPIKey: "AIzaSyD7h4O0BJAxeW31pG88Kr3mknke8KEZ7r4",
+                proxyURL: "http://cors-anywhere.herokuapp.com/",
                 debounceTime: 400,
                 countries: const ["id"],
                 isLatLngRequired: true,
                 getPlaceDetailWithLatLng: (prediction) async {
                   final places = GoogleMapsPlaces(
-                      apiKey: "AIzaSyD7h4O0BJAxeW31pG88Kr3mknke8KEZ7r4");
+                      apiKey: "AIzaSyD7h4O0BJAxeW31pG88Kr3mknke8KEZ7r4",
+                      baseUrl:
+                          'http://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/');
                   // Fetch place details using the place ID
                   final detail =
                       await places.getDetailsByPlaceId(prediction.placeId!);

@@ -1,6 +1,7 @@
 import 'package:allnimall_web/src/data/blocs/cart/cart_event.dart';
 import 'package:allnimall_web/src/data/blocs/cart/cart_state.dart';
 import 'package:allnimall_web/src/data/usecases/order/add_service_to_cart.dart';
+import 'package:allnimall_web/src/data/usecases/order/clear_cart.dart';
 import 'package:allnimall_web/src/data/usecases/order/get_cart.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,19 +9,23 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   ///Usecases
   final AddServiceToCart _addServiceToCart;
   final GetCart _getCart;
+  final ClearCart _clearCart;
 
   ///Bloc
   CartBloc({
     required AddServiceToCart addServiceToCart,
     required GetCart getCart,
+    required ClearCart clearCart,
   })  : _addServiceToCart = addServiceToCart,
         _getCart = getCart,
+        _clearCart = clearCart,
         super(CartInitialState()) {
     on<CartEvent>((event, emit) {
       emit(CartLoadingState());
     });
 
     on<AddServiceToCartEvent>(_addServiceToCartEventHandler);
+    on<ClearCartEvent>(_clearEventHandler);
     on<CheckCartEvent>(_checkCartEventHandler);
   }
 
@@ -40,6 +45,25 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         quantity: event.quantity,
         addOns: event.addOns,
       ));
+
+      result.fold(
+        (failure) => emit(CartErrorState(failure.errorMessage)),
+        (cartList) => emit(CartAddedState(cartList)),
+      );
+    } catch (e) {
+      // Handle exceptions if any
+      emit(CartErrorState('Error occured: $e'));
+    }
+  }
+
+  Future<void> _clearEventHandler(
+    ClearCartEvent event,
+    Emitter<CartState> emit,
+  ) async {
+    emit(CartLoadingState());
+
+    try {
+      final result = await _clearCart();
 
       result.fold(
         (failure) => emit(CartErrorState(failure.errorMessage)),

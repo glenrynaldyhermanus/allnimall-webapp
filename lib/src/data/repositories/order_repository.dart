@@ -22,7 +22,7 @@ class OrderRepository {
     try {
       await firestore.collection("order_groomings").add(order.toSnapshot());
       await firestore.collection("orders").add(order.toSnapshot());
-      return  Right(order);
+      return Right(order);
     } catch (e) {
       logger.e("createGroomingOrder => $e");
       return Left(CacheFailure(
@@ -63,6 +63,18 @@ class OrderRepository {
               cartList.map((orderService) => orderService.toJson()).toList()));
 
       return Right(cartList);
+    } catch (e) {
+      logger.e("addServiceToCart => $e");
+      return Left(CacheFailure(
+          message: "Oops layanan kami sedang bermasalah, mohon coba lagi",
+          statusCode: 500));
+    }
+  }
+
+  ResultFuture<List<OrderService>> clearCart() async {
+    try {
+      preferences.deleteSecureData(PrefKey.cart);
+      return const Right([]);
     } catch (e) {
       logger.e("addServiceToCart => $e");
       return Left(CacheFailure(

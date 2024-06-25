@@ -75,7 +75,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                 BlocConsumer(
                     bloc: context.read<OrderBloc>(),
                     listener: (context, state) {
-                      if(state is OrderCreatedState){
+                      if (state is OrderCreatedState) {
                         context.pushNamed('orderDetail');
                       }
                     },
@@ -252,6 +252,7 @@ class _ServiceCardState extends State<ServiceCard> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+
                             ...List.generate(
                               carts.length,
                               (index) => Column(
@@ -319,7 +320,21 @@ class _ServiceCardState extends State<ServiceCard> {
                                   fontWeight: FontWeight.bold,
                                 )
                               ],
-                            )
+                            ),
+                            const Gap(8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                AllnimallPrimaryButton('Hapus Cart',
+                                    width: 140,
+                                    height: 32,
+                                    onPressed: () {
+                                      context
+                                          .read<CartBloc>()
+                                          .add(ClearCartEvent());
+                                    }),
+                              ],
+                            ),
                           ],
                         ),
                       ),

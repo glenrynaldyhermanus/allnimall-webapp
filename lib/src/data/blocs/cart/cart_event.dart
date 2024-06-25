@@ -22,4 +22,6 @@ class AddServiceToCartEvent extends CartEvent {
   final List<ServiceAddOn> addOns;
 }
 
+class ClearCartEvent extends CartEvent {}
+
 class CheckCartEvent extends CartEvent {}
