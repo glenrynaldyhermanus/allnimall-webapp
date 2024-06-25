@@ -33,12 +33,12 @@ class AddServiceToCartParams {
 
   const AddServiceToCartParams.empty()
       : this(
-            serviceUid: '',
-            categoryName: '',
-            fee: 0,
-            name: '',
-            quantity: 0,
-            addOns: const []);
+      serviceUid: '',
+      categoryName: '',
+      fee: 0,
+      name: '',
+      quantity: 0,
+      addOns: const []);
 
   final String serviceUid;
   final String categoryName;

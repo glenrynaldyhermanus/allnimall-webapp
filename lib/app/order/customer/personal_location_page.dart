@@ -4,6 +4,7 @@ import 'package:allnimall_web/src/core/extensions/widget_iterable_ext.dart';
 import 'package:allnimall_web/src/data/objects/personal_location.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
 import 'package:allnimall_web/src/ui/components/button/allnimall_primary_button.dart';
+import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
 import 'package:allnimall_web/src/ui/components/textfield/allnimall_place_autocomplete_textfield.dart';
 import 'package:allnimall_web/src/ui/components/textfield/allnimall_textfield.dart';
 import 'package:allnimall_web/src/ui/res/colors.dart';
@@ -22,9 +23,18 @@ class PersonalLocationPage extends StatefulWidget {
 class _PersonalLocationPageState extends State<PersonalLocationPage> {
   LatLng? selectedLatLng;
   String? selectedAddress;
+  String? selectedCity;
   String? notes;
   final Completer<GoogleMapController> mapController =
       Completer<GoogleMapController>();
+
+  bool isCityAvailable() {
+    if (selectedCity!.contains('Jakarta') || selectedCity!.contains('Depok')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +57,7 @@ class _PersonalLocationPageState extends State<PersonalLocationPage> {
                         if (value != null) {
                           setState(() {
                             selectedAddress = value.split('||')[2];
+                            selectedCity = value.split('||')[3];
                             selectedLatLng = LatLng(
                               double.parse(value.split('||')[0]),
                               double.parse(value.split('||')[1]),
@@ -115,21 +126,28 @@ class _PersonalLocationPageState extends State<PersonalLocationPage> {
                 ),
               ),
             ),
-            AllnimallPrimaryButton(
-              'Simpan',
-              outsidePadding: const EdgeInsets.all(24),
-              onPressed: () {
-                if (selectedLatLng != null && selectedAddress != null) {
-                  context.pop(
-                    PersonalLocation(
-                      latLng: selectedLatLng!,
-                      address: selectedAddress!,
-                      notes: notes ?? '',
-                    ),
-                  );
-                }
-              },
-            )
+            if (selectedCity != null && isCityAvailable())
+              AllnimallPrimaryButton(
+                'Simpan',
+                outsidePadding: const EdgeInsets.all(24),
+                onPressed: () {
+                  if (selectedLatLng != null && selectedAddress != null) {
+                    context.pop(
+                      PersonalLocation(
+                        latLng: selectedLatLng!,
+                        address: selectedAddress!,
+                        city: 'Jakarta',
+                        notes: notes ?? '',
+                      ),
+                    );
+                  }
+                },
+              ),
+            if (selectedCity != null && !isCityAvailable())
+              const Padding(
+                padding: EdgeInsets.all(24.0),
+                child: GeoramaText('Groomer belum tersedia di kota kamu!', fontSize: 16, color: Colors.red,),
+              )
           ],
         ),
       ),

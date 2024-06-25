@@ -4,6 +4,7 @@ import 'package:allnimall_web/src/core/loggers/logger.dart';
 import 'package:allnimall_web/src/core/preferences/shared_preferences.dart';
 import 'package:allnimall_web/src/core/utils/errors/failures.dart';
 import 'package:allnimall_web/src/core/utils/typedefs.dart';
+import 'package:allnimall_web/src/data/models/order.dart';
 import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/models/service_add_on.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,6 +15,20 @@ class OrderRepository {
 
   final FirebaseFirestore firestore;
   final AMPreferences preferences;
+
+  ResultFuture<void> createGroomingOrder({
+    required GroomingOrder order,
+  }) async {
+    try {
+      await firestore.collection("orders").add(order.toSnapshot());
+      return const Right(null);
+    } catch (e) {
+      logger.e("createGroomingOrder => $e");
+      return Left(CacheFailure(
+          message: "Oops layanan kami sedang bermasalah, mohon coba lagi",
+          statusCode: 500));
+    }
+  }
 
   ResultFuture<List<OrderService>> addServiceToCart({
     required String serviceUid,

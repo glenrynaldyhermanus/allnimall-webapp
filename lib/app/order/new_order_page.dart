@@ -9,10 +9,12 @@ import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/objects/grooming_schedule.dart';
 import 'package:allnimall_web/src/data/objects/personal_information.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
+import 'package:allnimall_web/src/ui/components/button/allnimall_primary_button.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
 import 'package:allnimall_web/src/ui/res/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -26,6 +28,10 @@ class NewOrderPage extends StatefulWidget {
 }
 
 class _NewOrderPageState extends State<NewOrderPage> {
+  List<OrderService>? carts;
+  PersonalInformation? personalInfo;
+  GroomingSchedule? groomingSchedule;
+
   @override
   Widget build(BuildContext context) {
     context.read<CartBloc>().add(CheckCartEvent());
@@ -36,15 +42,52 @@ class _NewOrderPageState extends State<NewOrderPage> {
         child: Center(
           child: Container(
             constraints: const BoxConstraints(maxWidth: 600),
-            child: ListView(
+            child: Column(
               children: [
-                const ImageBanner(),
-                ...[
-                  const InformationCard(),
-                  const ServiceCard(),
-                  const CustomerCard(),
-                  const ScheduleCard(),
-                ].divide(const Gap(8)),
+                Expanded(
+                  child: ListView(
+                    children: [
+                      const ImageBanner(),
+                      ...[
+                        const InformationCard(),
+                        ServiceCard(
+                          onSet: (carts) {
+                            this.carts = carts;
+                          },
+                        ),
+                        CustomerCard(
+                          onSet: (personalInfo) {
+                            this.personalInfo = personalInfo;
+                          },
+                        ),
+                        ScheduleCard(
+                          onSet: (groomingSchedule) {
+                            this.groomingSchedule = groomingSchedule;
+                          },
+                        ),
+                      ].divide(const Gap(8)),
+                    ],
+                  ),
+                ),
+                AllnimallPrimaryButton(
+                  'Panggil groomer',
+                  outsidePadding: const EdgeInsets.all(24),
+                  onPressed: () {
+                    if (carts == null ||
+                        personalInfo == null ||
+                        groomingSchedule == null) {
+                      Fluttertoast.showToast(
+                          msg: "Mohon isi data terlebih dahulu",
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                      return;
+                    } else {}
+                  },
+                )
               ],
             ),
           ),
@@ -125,11 +168,16 @@ class InformationCard extends StatelessWidget {
   }
 }
 
-class ServiceCard extends StatelessWidget {
-  const ServiceCard({
-    super.key,
-  });
+class ServiceCard extends StatefulWidget {
+  const ServiceCard({super.key, required this.onSet});
 
+  final Function(List<OrderService>) onSet;
+
+  @override
+  State<ServiceCard> createState() => _ServiceCardState();
+}
+
+class _ServiceCardState extends State<ServiceCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -155,6 +203,7 @@ class ServiceCard extends StatelessWidget {
                 List<OrderService> carts = [];
                 if (state is CartAddedState) {
                   carts = state.carts;
+                  widget.onSet(carts);
                 }
 
                 return Column(
@@ -262,9 +311,9 @@ class ServiceCard extends StatelessWidget {
 }
 
 class CustomerCard extends StatefulWidget {
-  const CustomerCard({
-    super.key,
-  });
+  const CustomerCard({super.key, required this.onSet});
+
+  final Function(PersonalInformation) onSet;
 
   @override
   State<CustomerCard> createState() => _CustomerCardState();
@@ -280,6 +329,7 @@ class _CustomerCardState extends State<CustomerCard> {
         context.pushNamed('customerInformation').then((value) => setState(() {
               if (value != null && value is PersonalInformation) {
                 personalInfo = value;
+                widget.onSet(value);
               }
             }));
       },
@@ -330,9 +380,9 @@ class _CustomerCardState extends State<CustomerCard> {
 }
 
 class ScheduleCard extends StatefulWidget {
-  const ScheduleCard({
-    super.key,
-  });
+  const ScheduleCard({super.key, required this.onSet});
+
+  final Function(GroomingSchedule) onSet;
 
   @override
   State<ScheduleCard> createState() => _ScheduleCardState();
@@ -350,12 +400,13 @@ class _ScheduleCardState extends State<ScheduleCard> {
                 () {
                   if (value != null && value is GroomingSchedule) {
                     groomingSchedule = value;
+                    widget.onSet(value);
                   }
                 },
               ),
             );
       },
-      child:  Card(
+      child: Card(
         color: Colors.white,
         surfaceTintColor: Colors.white,
         margin: EdgeInsets.zero,
@@ -387,7 +438,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GeoramaText(DateFormat('EEEE, dd MMM').format(groomingSchedule!.date)),
+                      GeoramaText(DateFormat('EEEE, dd MMM')
+                          .format(groomingSchedule!.date)),
                       GeoramaText(groomingSchedule!.time),
                     ],
                   ),

@@ -2,6 +2,7 @@ import 'package:allnimall_web/src/core/extensions/widget_iterable_ext.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
 import 'package:allnimall_web/src/ui/res/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_google_maps_webservices/places.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_places_autocomplete_text_field/google_places_autocomplete_text_field.dart';
@@ -79,10 +80,28 @@ class _AllnimallPlaceAutoCompleteTextFieldState
                 debounceTime: 400,
                 countries: const ["id"],
                 isLatLngRequired: true,
-                getPlaceDetailWithLatLng: (prediction) {
-                  widget.onChanged('${prediction.lat}||${prediction.lng}||${prediction.description}');
+                getPlaceDetailWithLatLng: (prediction) async {
+                  final places = GoogleMapsPlaces(
+                      apiKey: "AIzaSyD7h4O0BJAxeW31pG88Kr3mknke8KEZ7r4",
+                      baseUrl:
+                          'http://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/');
+                  // Fetch place details using the place ID
+                  final detail =
+                      await places.getDetailsByPlaceId(prediction.placeId!);
+
+                  var city = "";
+                  for (var component in detail.result.addressComponents) {
+                    if (component.types
+                        .contains("administrative_area_level_2")) {
+                      city = component.shortName;
+                      break;
+                    }
+                  }
+
+                  widget.onChanged(
+                      '${prediction.lat}||${prediction.lng}||${prediction.description}||$city');
                 },
-                itmClick: (prediction) {
+                itmClick: (prediction) async {
                   _controller.text = prediction.description!;
                   _controller.selection = TextSelection.fromPosition(
                       TextPosition(offset: prediction.description!.length));
