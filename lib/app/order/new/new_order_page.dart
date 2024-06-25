@@ -5,6 +5,9 @@ import 'package:allnimall_web/src/core/utils/functions/count_carts_total_amount.
 import 'package:allnimall_web/src/data/blocs/cart/cart_bloc.dart';
 import 'package:allnimall_web/src/data/blocs/cart/cart_event.dart';
 import 'package:allnimall_web/src/data/blocs/cart/cart_state.dart';
+import 'package:allnimall_web/src/data/blocs/order/order_bloc.dart';
+import 'package:allnimall_web/src/data/blocs/order/order_event.dart';
+import 'package:allnimall_web/src/data/blocs/order/order_state.dart';
 import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/objects/grooming_schedule.dart';
 import 'package:allnimall_web/src/data/objects/personal_information.dart';
@@ -69,25 +72,44 @@ class _NewOrderPageState extends State<NewOrderPage> {
                     ],
                   ),
                 ),
-                AllnimallPrimaryButton(
-                  'Panggil groomer',
-                  outsidePadding: const EdgeInsets.all(24),
-                  onPressed: () {
-                    if (carts == null ||
-                        personalInfo == null ||
-                        groomingSchedule == null) {
-                      Fluttertoast.showToast(
-                          msg: "Mohon isi data terlebih dahulu",
-                          toastLength: Toast.LENGTH_LONG,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-                      return;
-                    } else {}
-                  },
-                )
+                BlocConsumer(
+                    bloc: context.read<OrderBloc>(),
+                    listener: (context, state) {
+                      if(state is OrderCreatedState){
+                        context.pushNamed('orderDetail');
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is OrderLoadingState) {
+                        return const CircularProgressIndicator();
+                      }
+
+                      return AllnimallPrimaryButton(
+                        'Panggil groomer',
+                        outsidePadding: const EdgeInsets.all(24),
+                        onPressed: () {
+                          if (carts == null ||
+                              personalInfo == null ||
+                              groomingSchedule == null) {
+                            Fluttertoast.showToast(
+                                msg: "Mohon isi data terlebih dahulu",
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                            return;
+                          } else {
+                            context.read<OrderBloc>().add(
+                                CreateGroomingOrderEvent(
+                                    carts: carts!,
+                                    personalInformation: personalInfo!,
+                                    groomingSchedule: groomingSchedule!));
+                          }
+                        },
+                      );
+                    })
               ],
             ),
           ),

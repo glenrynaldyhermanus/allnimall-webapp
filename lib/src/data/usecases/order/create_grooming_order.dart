@@ -1,4 +1,7 @@
+import 'package:allnimall_web/src/core/utils/functions/count_carts_total_amount.dart';
 import 'package:allnimall_web/src/core/utils/functions/count_carts_total_pet.dart';
+import 'package:allnimall_web/src/core/utils/functions/generate_order_name.dart';
+import 'package:allnimall_web/src/core/utils/functions/generate_order_no.dart';
 import 'package:allnimall_web/src/core/utils/typedefs.dart';
 import 'package:allnimall_web/src/core/utils/usecase.dart';
 import 'package:allnimall_web/src/data/models/order.dart';
@@ -7,28 +10,29 @@ import 'package:allnimall_web/src/data/objects/grooming_schedule.dart';
 import 'package:allnimall_web/src/data/objects/personal_information.dart';
 import 'package:allnimall_web/src/data/objects/personal_location.dart';
 import 'package:allnimall_web/src/data/repositories/order_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CreateGroomingOrder
-    extends UsecaseWithParams<void, CreateGroomingOrderParams> {
+    extends UsecaseWithParams<GroomingOrder, CreateGroomingOrderParams> {
   const CreateGroomingOrder(this._repo);
 
   final OrderRepository _repo;
 
   @override
-  ResultFuture<void> call(CreateGroomingOrderParams params) =>
+  ResultFuture<GroomingOrder> call(CreateGroomingOrderParams params) =>
       _repo.createGroomingOrder(
           order: GroomingOrder(
-              amount: countCartsTotalPet(params.carts),
+              amount: countCartsTotalAmount(params.carts),
               createdAt: DateTime.now(),
               customerAddress: params.personalInfo.location.address,
               customerCity: params.personalInfo.location.city,
-              customerLatLng: params.personalInfo.location.latLng,
+              customerLatLng: GeoPoint(params.personalInfo.location.latLng.latitude, params.personalInfo.location.latLng.longitude),
               customerName: params.personalInfo.name,
               customerPhone: params.personalInfo.phone,
-              name: 'groomingSchedule',
-              notes: 'notes',
-              orderNo: 'orderNo',
+              name: generateOrderName(params.carts),
+              notes: '',
+              orderNo: generateOrderNo(),
               paymentStatus: "Unpaid",
               petCategory: 'Kucing',
               preferredDay: "Weekday",

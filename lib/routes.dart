@@ -1,12 +1,14 @@
-import 'package:allnimall_web/app/order/customer/personal_information_page.dart';
 import 'package:allnimall_web/app/json/get_json_page.dart';
-import 'package:allnimall_web/app/order/customer/personal_location_page.dart';
-import 'package:allnimall_web/app/order/new_order_page.dart';
-import 'package:allnimall_web/app/order/pet_categories_page.dart';
-import 'package:allnimall_web/app/order/schedule/grooming_schedule_page.dart';
-import 'package:allnimall_web/app/order/services_page.dart';
+import 'package:allnimall_web/app/order/detail/order_detail_page.dart';
+import 'package:allnimall_web/app/order/new/customer/personal_information_page.dart';
+import 'package:allnimall_web/app/order/new/customer/personal_location_page.dart';
+import 'package:allnimall_web/app/order/new/new_order_page.dart';
+import 'package:allnimall_web/app/order/new/pet_categories_page.dart';
+import 'package:allnimall_web/app/order/new/schedule/grooming_schedule_page.dart';
+import 'package:allnimall_web/app/order/new/services_page.dart';
 import 'package:allnimall_web/src/core/injections/application_module.dart';
 import 'package:allnimall_web/src/data/blocs/cart/cart_bloc.dart';
+import 'package:allnimall_web/src/data/blocs/order/order_bloc.dart';
 import 'package:allnimall_web/src/data/blocs/service/category/category_bloc.dart';
 import 'package:allnimall_web/src/data/blocs/service/service/service_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +22,7 @@ final GoRouter router = GoRouter(
         providers: [
           BlocProvider(create: (_) => locator<CartBloc>()),
           BlocProvider(create: (_) => locator<CategoryBloc>()),
+          BlocProvider(create: (_) => locator<OrderBloc>()),
         ],
         child: const NewOrderPage(),
       ),
@@ -31,6 +34,7 @@ final GoRouter router = GoRouter(
         providers: [
           BlocProvider(create: (_) => locator<CartBloc>()),
           BlocProvider(create: (_) => locator<CategoryBloc>()),
+          BlocProvider(create: (_) => locator<OrderBloc>()),
         ],
         child: const NewOrderPage(),
       ),
@@ -76,6 +80,16 @@ final GoRouter router = GoRouter(
           builder: (ctx, state) => const GroomingSchedulePage(),
         ),
       ],
+    ),
+    GoRoute(
+      name: 'orderDetail',
+      path: '/order/detail',
+      builder: (ctx, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => locator<OrderBloc>()),
+        ],
+        child: const OrderDetailPage(),
+      ),
     ),
     GoRoute(
       path: '/test/json',

@@ -136,7 +136,7 @@ class _PersonalLocationPageState extends State<PersonalLocationPage> {
                       PersonalLocation(
                         latLng: selectedLatLng!,
                         address: selectedAddress!,
-                        city: 'Jakarta',
+                        city: selectedCity!,
                         notes: notes ?? '',
                       ),
                     );
