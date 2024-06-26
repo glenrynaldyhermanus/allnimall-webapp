@@ -4,6 +4,7 @@ import 'package:allnimall_web/src/core/extensions/widget_iterable_ext.dart';
 import 'package:allnimall_web/src/data/objects/personal_location.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
 import 'package:allnimall_web/src/ui/components/button/allnimall_primary_button.dart';
+import 'package:allnimall_web/src/ui/components/picker/allnimall_city_picker.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
 import 'package:allnimall_web/src/ui/components/textfield/allnimall_place_autocomplete_textfield.dart';
 import 'package:allnimall_web/src/ui/components/textfield/allnimall_textfield.dart';
@@ -77,51 +78,56 @@ class _PersonalLocationPageState extends State<PersonalLocationPage> {
                         }
                       },
                     ),
-                    if (selectedLatLng != null)
-                      AllnimallTextField(
-                        'Catatan',
-                        hint:
-                            'Detail lokasi, nomor / lantai unit / warna pagar',
-                        onChanged: (value) {
-                          if (value != null) {
-                            notes = value;
-                          }
-                        },
-                      ),
-                    if (selectedLatLng != null)
-                      Expanded(
-                        child: Stack(
-                          children: [
-                            GoogleMap(
-                              mapType: MapType.normal,
-                              zoomControlsEnabled: true,
-                              rotateGesturesEnabled: false,
-                              scrollGesturesEnabled: true,
-                              zoomGesturesEnabled: true,
-                              tiltGesturesEnabled: false,
-                              mapToolbarEnabled: false,
-                              initialCameraPosition: const CameraPosition(
-                                target: LatLng(
-                                    -6.345571693636769, 106.8335550674784),
-                                zoom: 18,
-                              ),
-                              onMapCreated: (GoogleMapController controller) {
-                                mapController.complete(controller);
-                              },
-                              onCameraMove: (position) {
-                                selectedLatLng = position.target;
-                              },
+                    AllnimallTextField(
+                      'Catatan',
+                      hint: 'Detail lokasi, nomor / lantai unit / warna pagar',
+                      onChanged: (value) {
+                        if (value != null) {
+                          notes = value;
+                        }
+                      },
+                    ),
+                    AllnimallCityPicker(
+                      initialValue: selectedCity,
+                      onChanged: (value) {
+                        if (value != null) {
+                          selectedCity = value;
+                        }
+                      },
+                    ),
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          GoogleMap(
+                            mapType: MapType.normal,
+                            zoomControlsEnabled: true,
+                            rotateGesturesEnabled: false,
+                            scrollGesturesEnabled: true,
+                            zoomGesturesEnabled: true,
+                            tiltGesturesEnabled: false,
+                            mapToolbarEnabled: false,
+                            initialCameraPosition: const CameraPosition(
+                              target:
+                                  LatLng(-6.345571693636769, 106.8335550674784),
+                              zoom: 18,
                             ),
-                            const Center(
-                              child: Icon(
-                                Icons.location_on_rounded,
-                                color: AllnimallColors.secondary,
-                                size: 36,
-                              ),
+                            onMapCreated: (GoogleMapController controller) {
+                              mapController.complete(controller);
+                            },
+                            onCameraMove: (position) {
+                              selectedLatLng = position.target;
+                            },
+                          ),
+                          const Center(
+                            child: Icon(
+                              Icons.location_on_rounded,
+                              color: AllnimallColors.secondary,
+                              size: 36,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
+                    ),
                   ].divide(const Gap(16)),
                 ),
               ),
@@ -146,7 +152,11 @@ class _PersonalLocationPageState extends State<PersonalLocationPage> {
             if (selectedCity != null && !isCityAvailable())
               const Padding(
                 padding: EdgeInsets.all(24.0),
-                child: GeoramaText('Groomer belum tersedia di kota kamu!', fontSize: 16, color: Colors.red,),
+                child: GeoramaText(
+                  'Groomer belum tersedia di kota kamu!',
+                  fontSize: 16,
+                  color: Colors.red,
+                ),
               )
           ],
         ),

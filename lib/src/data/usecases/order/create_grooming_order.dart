@@ -27,9 +27,12 @@ class CreateGroomingOrder
               createdAt: DateTime.now(),
               customerAddress: params.personalInfo.location.address,
               customerCity: params.personalInfo.location.city,
-              customerLatLng: GeoPoint(params.personalInfo.location.latLng.latitude, params.personalInfo.location.latLng.longitude),
+              customerLatLng: GeoPoint(
+                  params.personalInfo.location.latLng.latitude,
+                  params.personalInfo.location.latLng.longitude),
               customerName: params.personalInfo.name,
-              customerPhone: params.personalInfo.phone,
+              customerPhone:
+                  "+62${params.personalInfo.phone.replaceAll("-", "")}",
               name: generateOrderName(params.carts),
               notes: '',
               orderNo: generateOrderNo(),

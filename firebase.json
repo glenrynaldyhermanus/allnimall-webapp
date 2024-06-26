@@ -9,6 +9,10 @@
     ],
     "frameworksBackend": {
       "region": "asia-east1"
-    }
+    },
+    "rewrites": [ {
+      "source": "**/!(*.css|*.js|*.map|*.jpg|*.gif|*.png|*.php)",
+      "destination": "/index.html"
+    } ]
   }
 }

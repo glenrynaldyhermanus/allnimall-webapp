@@ -53,7 +53,12 @@ class CitySelectionSheetState extends State<CitySelectionSheet> {
           child: StickyHeader(
             header: const SheetHeader(title: 'Pilih kota'),
             content: const SheetContent(
-              cities: ['Jakarta Selatan', 'Jakarta Timur', 'Depok'],
+              cities: [
+                'Jakarta Pusat',
+                'Jakarta Selatan',
+                'Jakarta Timur',
+                'Depok'
+              ],
             ),
           ),
         ),

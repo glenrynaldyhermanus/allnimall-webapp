@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class AllnimallCityPicker extends StatefulWidget {
+  final String? initialValue;
   final String? errorMessage;
   final Function(String? val) onChanged;
 
   const AllnimallCityPicker({
     super.key,
+    this.initialValue,
     this.errorMessage,
     required this.onChanged,
   });
@@ -29,6 +31,9 @@ class _AllnimallCityPickerState extends State<AllnimallCityPicker> {
     _focusNode.addListener(() {
       setState(() => {});
     });
+    if (widget.initialValue != null && widget.initialValue!.isNotEmpty) {
+      selectedCity = widget.initialValue!;
+    }
   }
 
   bool isError() {
