@@ -19,5 +19,6 @@ mobile development, and a full API reference.
 
 # - To generate router : dart run routefly --watch
 
+- Generator : dart run build_runner watch
 - Build : flutter build web --web-renderer canvaskit --no-tree-shake-icons
 - Deploy : firebase deploy --only hosting:order-allnimall

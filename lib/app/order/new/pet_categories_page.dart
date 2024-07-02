@@ -1,78 +1,106 @@
 import 'package:allnimall_web/src/core/extensions/double_ext.dart';
 import 'package:allnimall_web/src/core/extensions/widget_iterable_ext.dart';
-import 'package:allnimall_web/src/data/blocs/service/category/category_bloc.dart';
-import 'package:allnimall_web/src/data/blocs/service/category/category_event.dart';
-import 'package:allnimall_web/src/data/blocs/service/category/category_state.dart';
+import 'package:allnimall_web/src/core/utils/functions/run_on_page_load.dart';
 import 'package:allnimall_web/src/data/models/pet_category.dart';
+import 'package:allnimall_web/src/data/providers/grooming/category/category_provider.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
 import 'package:allnimall_web/src/ui/components/bottomsheet/service_category_sheet.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
 import 'package:allnimall_web/src/ui/res/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-class PetCategoriesPage extends StatefulWidget {
+class PetCategoriesPage extends ConsumerStatefulWidget {
   const PetCategoriesPage({Key? key}) : super(key: key);
 
   @override
-  State<PetCategoriesPage> createState() => _PetCategoriesPageState();
+  ConsumerState<PetCategoriesPage> createState() => _PetCategoriesPageState();
 }
 
-class _PetCategoriesPageState extends State<PetCategoriesPage> {
+class _PetCategoriesPageState extends ConsumerState<PetCategoriesPage> {
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    context.read<CategoryBloc>().add(const FetchPetCategoryEvent());
+    onPageLoaded(() => ref.read(categoryProvider.notifier).fetchPetCategory());
   }
 
   @override
   Widget build(BuildContext context) {
+    final categoryState = ref.watch(categoryProvider);
+
     return Scaffold(
       backgroundColor: AllnimallColors.backgroundPrimary,
       appBar: const AppBarCustomer(title: 'Pilih Kategori'),
       body: SafeArea(
-        child: BlocConsumer<CategoryBloc, CategoryState>(
-          listener: (ctx, state) {},
-          builder: (ctx, state) {
-            if (state is ServiceCategoryLoadingState) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (state is PetCategoryFetchedState) {
-              return Center(
-                child: Container(
-                  constraints: const BoxConstraints(maxWidth: 600),
-                  child: ListView(
-                    children: [
-                      const Gap(24),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                        child: GeoramaText(
-                          'Pilih kategori Pet',
-                          fontSize: 16,
-                        ),
-                      ),
-                      const Gap(8),
-                      ...List.generate(
-                        state.categoryList.length,
-                        (index) => CategoryCard(
-                            petCategory: state.categoryList[index]),
-                      ).divide(const Gap(8))
-                    ],
+        child: categoryState.when(
+          initial: () => Container(),
+          loading: () => const CircularProgressIndicator(),
+          success: (categories) => Center(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: ListView(
+                children: [
+                  const Gap(24),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                    child: GeoramaText(
+                      'Pilih kategori Pet',
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-              );
-            }
-
-            return Container();
-          },
+                  const Gap(8),
+                  ...List.generate(
+                    categories.length,
+                    (index) => CategoryCard(petCategory: categories[index]),
+                  ).divide(const Gap(8))
+                ],
+              ),
+            ),
+          ),
+          error: () => Container(),
         ),
+        // child: BlocConsumer<CategoryBloc, CategoryState>(
+        //   listener: (ctx, state) {},
+        //   builder: (ctx, state) {
+        //     if (state is ServiceCategoryLoadingState) {
+        //       return const Center(
+        //         child: CircularProgressIndicator(),
+        //       );
+        //     }
+        //     if (state is PetCategoryFetchedState) {
+        //       return Center(
+        //         child: Container(
+        //           constraints: const BoxConstraints(maxWidth: 600),
+        //           child: ListView(
+        //             children: [
+        //               const Gap(24),
+        //               const Padding(
+        //                 padding: EdgeInsets.only(left: 16.0, right: 16.0),
+        //                 child: GeoramaText(
+        //                   'Pilih kategori Pet',
+        //                   fontSize: 16,
+        //                 ),
+        //               ),
+        //               const Gap(8),
+        //               ...List.generate(
+        //                 state.categoryList.length,
+        //                 (index) => CategoryCard(
+        //                     petCategory: state.categoryList[index]),
+        //               ).divide(const Gap(8))
+        //             ],
+        //           ),
+        //         ),
+        //       );
+        //     }
+        //
+        //     return Container();
+        //   },
+        // ),
       ),
     );
   }

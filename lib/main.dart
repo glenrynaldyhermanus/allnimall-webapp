@@ -1,9 +1,11 @@
 import 'package:allnimall_web/firebase_options.dart';
 import 'package:allnimall_web/routes.dart';
 import 'package:allnimall_web/src/core/injections/application_module.dart';
+import 'package:allnimall_web/src/data/providers/grooming/category/category_provider.dart';
 import 'package:allnimall_web/src/ui/res/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seo_renderer/helpers/robot_detector_vm.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -18,7 +20,13 @@ void main() async {
   );
 
   await init();
-  runApp(const MyApp());
+  runApp(ProviderScope(overrides: [
+    categoryProvider.overrideWith(() {
+      final provider = Category();
+      provider.init(locator());
+      return provider;
+    }),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
