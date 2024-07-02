@@ -6,7 +6,12 @@ class CategoryProviderState extends BaseState<List<PetCategory>> {
     bool isLoading = false,
     bool isError = false,
     List<PetCategory>? data,
-  }) : super(isLoading: isLoading, isError: isError, data: data);
+    String? message,
+  }) : super(
+            isLoading: isLoading,
+            isError: isError,
+            data: data,
+            message: message);
 
   factory CategoryProviderState.initial() {
     return CategoryProviderState();
@@ -20,7 +25,7 @@ class CategoryProviderState extends BaseState<List<PetCategory>> {
     return CategoryProviderState(data: data);
   }
 
-  factory CategoryProviderState.error() {
-    return CategoryProviderState(isError: true);
+  factory CategoryProviderState.error(String message) {
+    return CategoryProviderState(isError: true, message: message);
   }
 }

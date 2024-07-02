@@ -39,7 +39,7 @@ class _PetCategoriesPageState extends ConsumerState<PetCategoriesPage> {
       body: SafeArea(
         child: categoryState.when(
           initial: () => Container(),
-          loading: () => const CircularProgressIndicator(),
+          loading: () => const Center(child: CircularProgressIndicator()),
           success: (categories) => Center(
             child: Container(
               constraints: const BoxConstraints(maxWidth: 600),
@@ -62,7 +62,7 @@ class _PetCategoriesPageState extends ConsumerState<PetCategoriesPage> {
               ),
             ),
           ),
-          error: () => Container(),
+          error: (message) => Container(),
         ),
         // child: BlocConsumer<CategoryBloc, CategoryState>(
         //   listener: (ctx, state) {},

@@ -25,7 +25,7 @@ class Category extends _$Category {
     final result = await _fetchPetCategories();
     result.fold(
       (failure) {
-        state = CategoryProviderState.error();
+        state = CategoryProviderState.error(failure.message);
       },
       (categories) {
         state = CategoryProviderState.success(categories);
