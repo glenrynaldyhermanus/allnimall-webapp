@@ -11,7 +11,7 @@ class OrderLoadingState extends OrderState {}
 class OrderCreatedState extends OrderState {
   const OrderCreatedState(this.order);
 
-  final GroomingOrder order;
+  final OrderModel order;
 }
 
 class OrderUnauthenticatedState extends OrderState {}

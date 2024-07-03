@@ -31,13 +31,13 @@ class _PetCategoriesPageState extends ConsumerState<PetCategoriesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final categoryState = ref.watch(categoryProvider);
+    final categoryProviderState = ref.watch(categoryProvider);
 
     return Scaffold(
       backgroundColor: AllnimallColors.backgroundPrimary,
       appBar: const AppBarCustomer(title: 'Pilih Kategori'),
       body: SafeArea(
-        child: categoryState.when(
+        child: categoryProviderState.when(
           initial: () => Container(),
           loading: () => const Center(child: CircularProgressIndicator()),
           success: (categories) => Center(
@@ -64,43 +64,6 @@ class _PetCategoriesPageState extends ConsumerState<PetCategoriesPage> {
           ),
           error: (message) => Container(),
         ),
-        // child: BlocConsumer<CategoryBloc, CategoryState>(
-        //   listener: (ctx, state) {},
-        //   builder: (ctx, state) {
-        //     if (state is ServiceCategoryLoadingState) {
-        //       return const Center(
-        //         child: CircularProgressIndicator(),
-        //       );
-        //     }
-        //     if (state is PetCategoryFetchedState) {
-        //       return Center(
-        //         child: Container(
-        //           constraints: const BoxConstraints(maxWidth: 600),
-        //           child: ListView(
-        //             children: [
-        //               const Gap(24),
-        //               const Padding(
-        //                 padding: EdgeInsets.only(left: 16.0, right: 16.0),
-        //                 child: GeoramaText(
-        //                   'Pilih kategori Pet',
-        //                   fontSize: 16,
-        //                 ),
-        //               ),
-        //               const Gap(8),
-        //               ...List.generate(
-        //                 state.categoryList.length,
-        //                 (index) => CategoryCard(
-        //                     petCategory: state.categoryList[index]),
-        //               ).divide(const Gap(8))
-        //             ],
-        //           ),
-        //         ),
-        //       );
-        //     }
-        //
-        //     return Container();
-        //   },
-        // ),
       ),
     );
   }
@@ -109,7 +72,7 @@ class _PetCategoriesPageState extends ConsumerState<PetCategoriesPage> {
 class CategoryCard extends StatelessWidget {
   const CategoryCard({super.key, required this.petCategory});
 
-  final PetCategory petCategory;
+  final PetCategoryModel petCategory;
 
   IconData getIcons(int sequence) {
     switch (sequence) {

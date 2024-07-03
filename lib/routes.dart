@@ -7,10 +7,7 @@ import 'package:allnimall_web/app/order/new/pet_categories_page.dart';
 import 'package:allnimall_web/app/order/new/schedule/grooming_schedule_page.dart';
 import 'package:allnimall_web/app/order/new/services_page.dart';
 import 'package:allnimall_web/src/core/injections/application_module.dart';
-import 'package:allnimall_web/src/data/blocs/cart/cart_bloc.dart';
 import 'package:allnimall_web/src/data/blocs/order/order_bloc.dart';
-import 'package:allnimall_web/src/data/blocs/service/category/category_bloc.dart';
-import 'package:allnimall_web/src/data/blocs/service/service/service_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,8 +17,6 @@ final GoRouter router = GoRouter(
       path: '/',
       builder: (ctx, state) => MultiBlocProvider(
         providers: [
-          BlocProvider(create: (_) => locator<CartBloc>()),
-          BlocProvider(create: (_) => locator<CategoryBloc>()),
           BlocProvider(create: (_) => locator<OrderBloc>()),
         ],
         child: const NewOrderPage(),
@@ -32,8 +27,6 @@ final GoRouter router = GoRouter(
       path: '/order/new',
       builder: (ctx, state) => MultiBlocProvider(
         providers: [
-          BlocProvider(create: (_) => locator<CartBloc>()),
-          BlocProvider(create: (_) => locator<CategoryBloc>()),
           BlocProvider(create: (_) => locator<OrderBloc>()),
         ],
         child: const NewOrderPage(),
@@ -42,22 +35,13 @@ final GoRouter router = GoRouter(
         GoRoute(
           name: 'selectCategory',
           path: 'category',
-          builder: (ctx, state) => BlocProvider(
-            create: (_) => locator<CategoryBloc>(),
-            child: const PetCategoriesPage(),
-          ),
+          builder: (ctx, state) => const PetCategoriesPage(),
           routes: [
             GoRoute(
               name: 'selectService',
               path: 'service',
-              builder: (ctx, state) => MultiBlocProvider(
-                providers: [
-                  BlocProvider(create: (_) => locator<CartBloc>()),
-                  BlocProvider(create: (_) => locator<ServiceBloc>()),
-                ],
-                child: ServicesPage(
-                  categoryUid: state.uri.queryParameters['categoryUid'] ?? '',
-                ),
+              builder: (ctx, state) => ServicesPage(
+                categoryUid: state.uri.queryParameters['categoryUid'] ?? '',
               ),
             ),
           ],

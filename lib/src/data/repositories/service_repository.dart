@@ -13,25 +13,25 @@ class ServiceRepository {
 
   final FirebaseFirestore firestore;
 
-  ResultFuture<List<PetCategory>> fetchPetCategories() async {
+  ResultFuture<List<PetCategoryModel>> fetchPetCategories() async {
     try {
       final query = await firestore
           .collection("pet_categories")
           .where("is_active", isEqualTo: true)
           .get();
 
-      final List<PetCategory> data =
-          query.docs.map((doc) => PetCategory.fromSnapshot(doc)).toList();
+      final List<PetCategoryModel> data =
+          query.docs.map((doc) => PetCategoryModel.fromSnapshot(doc)).toList();
 
-      for (PetCategory category in data) {
+      for (PetCategoryModel category in data) {
         final queryService = await firestore
             .collection("service_categories")
             .where('group_sequence', isEqualTo: category.sequence)
             .where('is_active', isEqualTo: true)
             .get();
 
-        final List<ServiceCategory> services = queryService.docs
-            .map((serviceDoc) => ServiceCategory.fromSnapshot(serviceDoc))
+        final List<ServiceCategoryModel> services = queryService.docs
+            .map((serviceDoc) => ServiceCategoryModel.fromSnapshot(serviceDoc))
             .toList();
 
         category.services = services;
@@ -46,7 +46,7 @@ class ServiceRepository {
     }
   }
 
-  ResultFuture<List<Service>> fetchServices(
+  ResultFuture<List<ServiceModel>> fetchServices(
       {required String categoryUid}) async {
     try {
       final docRef = firestore.doc('service_categories/$categoryUid');
@@ -57,10 +57,10 @@ class ServiceRepository {
           .orderBy('sequence', descending: false)
           .get();
 
-      final List<Service> data =
-          queryService.docs.map((doc) => Service.fromSnapshot(doc)).toList();
+      final List<ServiceModel> data =
+          queryService.docs.map((doc) => ServiceModel.fromSnapshot(doc)).toList();
 
-      for (Service service in data) {
+      for (ServiceModel service in data) {
         final queryAddOn = await firestore
             .collection('services')
             .doc(service.id)
@@ -68,8 +68,8 @@ class ServiceRepository {
             .orderBy('sequence', descending: false)
             .get();
 
-        final List<ServiceAddOn> dataAddOn = queryAddOn.docs
-            .map((doc) => ServiceAddOn.fromSnapshot(doc))
+        final List<ServiceAddOnModel> dataAddOn = queryAddOn.docs
+            .map((doc) => ServiceAddOnModel.fromSnapshot(doc))
             .toList();
         service.addOns = dataAddOn;
       }

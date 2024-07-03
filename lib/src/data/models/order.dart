@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class GroomingOrder {
+class OrderModel {
   double amount;
   DateTime? confirmedAt;
   DateTime createdAt;
@@ -29,7 +29,7 @@ class GroomingOrder {
   String? startTime;
   String status;
 
-  GroomingOrder({
+  OrderModel({
     required this.amount,
     this.confirmedAt,
     required this.createdAt,
@@ -59,9 +59,9 @@ class GroomingOrder {
     required this.status,
   });
 
-  factory GroomingOrder.fromSnapshot(DocumentSnapshot doc) {
+  factory OrderModel.fromSnapshot(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return GroomingOrder(
+    return OrderModel(
       amount: data['amount'],
       confirmedAt: data['confirmed_at'],
       createdAt: data['created_at'],

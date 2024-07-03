@@ -15,5 +15,5 @@ class CreateGroomingOrderEvent extends OrderEvent {
 
   final PersonalInformation personalInformation;
   final GroomingSchedule groomingSchedule;
-  final List<OrderService> carts;
+  final List<OrderServiceModel> carts;
 }

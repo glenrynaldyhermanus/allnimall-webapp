@@ -5,13 +5,13 @@ import 'package:allnimall_web/src/data/models/service_add_on.dart';
 import 'package:allnimall_web/src/data/repositories/order_repository.dart';
 
 class AddServiceToCart
-    extends UsecaseWithParams<List<OrderService>, AddServiceToCartParams> {
+    extends UsecaseWithParams<List<OrderServiceModel>, AddServiceToCartParams> {
   const AddServiceToCart(this._repo);
 
   final OrderRepository _repo;
 
   @override
-  ResultFuture<List<OrderService>> call(AddServiceToCartParams params) =>
+  ResultFuture<List<OrderServiceModel>> call(AddServiceToCartParams params) =>
       _repo.addServiceToCart(
           serviceUid: params.serviceUid,
           categoryName: params.categoryName,
@@ -45,5 +45,5 @@ class AddServiceToCartParams {
   final double fee;
   final String name;
   final int quantity;
-  final List<ServiceAddOn> addOns;
+  final List<ServiceAddOnModel> addOns;
 }

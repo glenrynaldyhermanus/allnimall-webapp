@@ -1,11 +1,11 @@
 import 'package:allnimall_web/src/core/utils/base_state.dart';
 import 'package:allnimall_web/src/data/models/service.dart';
 
-class ServiceProviderState extends BaseState<List<Service>> {
+class ServiceProviderState extends BaseState<List<ServiceModel>> {
   ServiceProviderState({
     bool isLoading = false,
     bool isError = false,
-    List<Service>? data,
+    List<ServiceModel>? data,
     String? message,
   }) : super(
             isLoading: isLoading,
@@ -21,7 +21,7 @@ class ServiceProviderState extends BaseState<List<Service>> {
     return ServiceProviderState(isLoading: true);
   }
 
-  factory ServiceProviderState.success(List<Service> data) {
+  factory ServiceProviderState.success(List<ServiceModel> data) {
     return ServiceProviderState(data: data);
   }
 

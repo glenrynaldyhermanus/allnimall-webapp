@@ -1,7 +1,7 @@
 import 'package:allnimall_web/src/data/models/service_add_on.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Service {
+class ServiceModel {
   String id;
   String categoryName;
   String categoryUid;
@@ -11,9 +11,9 @@ class Service {
   bool isActive;
   String name;
   int sequence;
-  List<ServiceAddOn>? addOns;
+  List<ServiceAddOnModel>? addOns;
 
-  Service({
+  ServiceModel({
     required this.id,
     required this.categoryName,
     required this.categoryUid,
@@ -26,10 +26,10 @@ class Service {
     this.addOns,
   });
 
-  factory Service.fromSnapshot(QueryDocumentSnapshot snapshot) {
+  factory ServiceModel.fromSnapshot(QueryDocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-    return Service(
+    return ServiceModel(
       id: snapshot.id,
       categoryName: data['category_name'],
       categoryUid: data['category_uid'].toString(),
@@ -42,8 +42,8 @@ class Service {
     );
   }
 
-  factory Service.fromJson(String id, Map<String, dynamic> json) {
-    return Service(
+  factory ServiceModel.fromJson(String id, Map<String, dynamic> json) {
+    return ServiceModel(
       id: id,
       categoryName: json['category_name'],
       categoryUid: json['category_uid'].toString(),

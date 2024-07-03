@@ -1,6 +1,6 @@
 import 'package:allnimall_web/src/data/models/order_service.dart';
 
-String generateOrderName(List<OrderService> carts) {
+String generateOrderName(List<OrderServiceModel> carts) {
   String orderName = "";
 
   for (var cart in carts) {

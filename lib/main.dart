@@ -1,7 +1,9 @@
 import 'package:allnimall_web/firebase_options.dart';
 import 'package:allnimall_web/routes.dart';
 import 'package:allnimall_web/src/core/injections/application_module.dart';
+import 'package:allnimall_web/src/data/providers/cart/cart_provider.dart';
 import 'package:allnimall_web/src/data/providers/grooming/category/category_provider.dart';
+import 'package:allnimall_web/src/data/providers/grooming/service/service_provider.dart';
 import 'package:allnimall_web/src/ui/res/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +26,16 @@ void main() async {
     categoryProvider.overrideWith(() {
       final provider = Category();
       provider.init(locator());
+      return provider;
+    }),
+    serviceProvider.overrideWith(() {
+      final provider = Service();
+      provider.init(locator());
+      return provider;
+    }),
+    cartProvider.overrideWith(() {
+      final provider = Cart();
+      provider.init(locator(), locator(), locator());
       return provider;
     }),
   ], child: const MyApp()));

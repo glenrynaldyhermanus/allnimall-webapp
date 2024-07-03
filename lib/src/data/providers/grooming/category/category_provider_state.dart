@@ -1,11 +1,11 @@
 import 'package:allnimall_web/src/core/utils/base_state.dart';
 import 'package:allnimall_web/src/data/models/pet_category.dart';
 
-class CategoryProviderState extends BaseState<List<PetCategory>> {
+class CategoryProviderState extends BaseState<List<PetCategoryModel>> {
   CategoryProviderState({
     bool isLoading = false,
     bool isError = false,
-    List<PetCategory>? data,
+    List<PetCategoryModel>? data,
     String? message,
   }) : super(
             isLoading: isLoading,
@@ -21,7 +21,7 @@ class CategoryProviderState extends BaseState<List<PetCategory>> {
     return CategoryProviderState(isLoading: true);
   }
 
-  factory CategoryProviderState.success(List<PetCategory> data) {
+  factory CategoryProviderState.success(List<PetCategoryModel> data) {
     return CategoryProviderState(data: data);
   }
 

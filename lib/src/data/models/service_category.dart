@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ServiceCategory {
+class ServiceCategoryModel {
   String id;
   int sequence;
   String type;
@@ -9,7 +9,7 @@ class ServiceCategory {
   String description;
   int groupSequence;
 
-  ServiceCategory({
+  ServiceCategoryModel({
     required this.id,
     required this.sequence,
     required this.type,
@@ -19,10 +19,10 @@ class ServiceCategory {
     this.description = '',
   });
 
-  factory ServiceCategory.fromSnapshot(QueryDocumentSnapshot snapshot) {
+  factory ServiceCategoryModel.fromSnapshot(QueryDocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-    return ServiceCategory(
+    return ServiceCategoryModel(
       id: snapshot.id,
       sequence: data['sequence'],
       type: data['type'],
@@ -33,8 +33,8 @@ class ServiceCategory {
     );
   }
 
-  factory ServiceCategory.fromJson(String id, Map<String, dynamic> json) {
-    return ServiceCategory(
+  factory ServiceCategoryModel.fromJson(String id, Map<String, dynamic> json) {
+    return ServiceCategoryModel(
       id: id,
       sequence: json['sequence'],
       type: json['type'],

@@ -1,14 +1,14 @@
 import 'package:allnimall_web/src/core/loggers/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ServiceAddOn {
+class ServiceAddOnModel {
   String? id;
   double fee;
   bool isActive;
   String name;
   int sequence;
 
-  ServiceAddOn({
+  ServiceAddOnModel({
     this.id,
     required this.fee,
     required this.isActive,
@@ -16,10 +16,10 @@ class ServiceAddOn {
     required this.sequence,
   });
 
-  factory ServiceAddOn.fromSnapshot(QueryDocumentSnapshot snapshot) {
+  factory ServiceAddOnModel.fromSnapshot(QueryDocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-    return ServiceAddOn(
+    return ServiceAddOnModel(
       id: snapshot.id,
       fee: data['fee'],
       isActive: data['is_active'],
@@ -28,8 +28,8 @@ class ServiceAddOn {
     );
   }
 
-  factory ServiceAddOn.fromJsonWithId(String id, Map<String, dynamic> json) {
-    return ServiceAddOn(
+  factory ServiceAddOnModel.fromJsonWithId(String id, Map<String, dynamic> json) {
+    return ServiceAddOnModel(
       id: id,
       fee: json['fee'],
       isActive: json['is_active'],
@@ -38,8 +38,8 @@ class ServiceAddOn {
     );
   }
 
-  factory ServiceAddOn.fromJson(Map<String, dynamic> json) {
-    return ServiceAddOn(
+  factory ServiceAddOnModel.fromJson(Map<String, dynamic> json) {
+    return ServiceAddOnModel(
       fee: json['fee'],
       isActive: json['is_active'],
       name: json['name'],

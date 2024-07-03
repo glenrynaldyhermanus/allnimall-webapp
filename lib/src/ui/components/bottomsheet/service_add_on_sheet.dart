@@ -1,17 +1,15 @@
 import 'package:allnimall_web/src/core/extensions/double_ext.dart';
 import 'package:allnimall_web/src/core/extensions/widget_iterable_ext.dart';
-import 'package:allnimall_web/src/core/injections/application_module.dart';
-import 'package:allnimall_web/src/data/blocs/cart/cart_bloc.dart';
-import 'package:allnimall_web/src/data/blocs/cart/cart_event.dart';
 import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/models/service.dart';
 import 'package:allnimall_web/src/data/models/service_add_on.dart';
+import 'package:allnimall_web/src/data/providers/cart/cart_provider.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
 import 'package:allnimall_web/src/ui/components/text/rocko_text.dart';
 import 'package:allnimall_web/src/ui/res/colors.dart';
 import 'package:customizable_counter/customizable_counter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sticky_headers/sticky_headers.dart';
@@ -20,15 +18,15 @@ class ServiceAddOnSheet extends StatefulWidget {
   const ServiceAddOnSheet(
       {super.key, required this.service, required this.carts});
 
-  final Service service;
-  final List<OrderService> carts;
+  final ServiceModel service;
+  final List<OrderServiceModel> carts;
 
   @override
   ServiceAddOnSheetState createState() => ServiceAddOnSheetState();
 }
 
 class ServiceAddOnSheetState extends State<ServiceAddOnSheet> {
-  OrderService? selectedOrder;
+  OrderServiceModel? selectedOrder;
 
   @override
   void initState() {
@@ -48,12 +46,21 @@ class ServiceAddOnSheetState extends State<ServiceAddOnSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => locator<CartBloc>(),
-      child: Material(
-        color: Colors.white,
-        elevation: 5,
-        shape: const RoundedRectangleBorder(
+    return Material(
+      color: Colors.white,
+      elevation: 5,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(0),
+          bottomRight: Radius.circular(0),
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
+      child: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          color: AllnimallColors.backgroundPrimary,
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(0),
             bottomRight: Radius.circular(0),
@@ -61,27 +68,15 @@ class ServiceAddOnSheetState extends State<ServiceAddOnSheet> {
             topRight: Radius.circular(16),
           ),
         ),
-        child: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            color: AllnimallColors.backgroundPrimary,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(0),
-              bottomRight: Radius.circular(0),
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-          ),
-          child: SingleChildScrollView(
-            child: StickyHeader(
-              header: SheetHeader(
-                  title: widget.service.name,
-                  description: widget.service.description,
-                  fee: widget.service.fee),
-              content: SheetContent(
-                service: widget.service,
-                selectedOrder: selectedOrder,
-              ),
+        child: SingleChildScrollView(
+          child: StickyHeader(
+            header: SheetHeader(
+                title: widget.service.name,
+                description: widget.service.description,
+                fee: widget.service.fee),
+            content: SheetContent(
+              service: widget.service,
+              selectedOrder: selectedOrder,
             ),
           ),
         ),
@@ -175,21 +170,21 @@ class SheetHeader extends StatelessWidget {
   }
 }
 
-class SheetContent extends StatefulWidget {
+class SheetContent extends ConsumerStatefulWidget {
   const SheetContent(
       {super.key, required this.service, required this.selectedOrder});
 
-  final Service service;
-  final OrderService? selectedOrder;
+  final ServiceModel service;
+  final OrderServiceModel? selectedOrder;
 
   @override
-  State<SheetContent> createState() => _SheetContentState();
+  ConsumerState<SheetContent> createState() => _SheetContentState();
 }
 
-class _SheetContentState extends State<SheetContent> {
+class _SheetContentState extends ConsumerState<SheetContent> {
   int quantity = 1;
 
-  List<ServiceAddOn> addOns = [];
+  List<ServiceAddOnModel> addOns = [];
 
   @override
   void initState() {
@@ -278,15 +273,14 @@ class _SheetContentState extends State<SheetContent> {
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: ElevatedButton(
             onPressed: () {
-              context.read<CartBloc>().add(
-                    AddServiceToCartEvent(
-                        serviceUid: widget.service.id,
-                        categoryName: widget.service.categoryName,
-                        fee: widget.service.fee,
-                        name: widget.service.name,
-                        quantity: quantity,
-                        addOns: addOns),
-                  );
+              ref.read(cartProvider.notifier).addServiceToCart(
+                  widget.service.id,
+                  widget.service.categoryName,
+                  widget.service.fee,
+                  widget.service.name,
+                  quantity,
+                  addOns);
+
               context.pop();
             },
             style: ElevatedButton.styleFrom(
@@ -319,8 +313,8 @@ class ServiceAddOnsRow extends StatefulWidget {
     required this.onSelected,
   });
 
-  final Service service;
-  final ServiceAddOn serviceAddOn;
+  final ServiceModel service;
+  final ServiceAddOnModel serviceAddOn;
   final Function(bool selected) onSelected;
 
   @override

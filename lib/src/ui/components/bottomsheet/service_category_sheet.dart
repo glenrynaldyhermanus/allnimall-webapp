@@ -11,7 +11,7 @@ import 'package:sticky_headers/sticky_headers.dart';
 class ServiceCategorySheet extends StatefulWidget {
   const ServiceCategorySheet({super.key, required this.serviceCategories});
 
-  final List<ServiceCategory> serviceCategories;
+  final List<ServiceCategoryModel> serviceCategories;
 
   @override
   ServiceCategorySheetState createState() => ServiceCategorySheetState();
@@ -138,7 +138,7 @@ class SheetHeader extends StatelessWidget {
 class SheetContent extends StatelessWidget {
   const SheetContent({super.key, required this.serviceCategories});
 
-  final List<ServiceCategory> serviceCategories;
+  final List<ServiceCategoryModel> serviceCategories;
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +160,7 @@ class ServiceCategoryCard extends StatelessWidget {
     required this.serviceCategory,
   });
 
-  final ServiceCategory serviceCategory;
+  final ServiceCategoryModel serviceCategory;
 
   String getIconAsset(int sequence) {
     switch (sequence) {

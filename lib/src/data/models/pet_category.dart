@@ -1,15 +1,15 @@
 import 'package:allnimall_web/src/data/models/service_category.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PetCategory {
+class PetCategoryModel {
   String id;
   int sequence;
   bool isActive;
   String name;
   double startFrom;
-  List<ServiceCategory>? services;
+  List<ServiceCategoryModel>? services;
 
-  PetCategory(
+  PetCategoryModel(
       {required this.id,
       required this.sequence,
       required this.isActive,
@@ -17,8 +17,8 @@ class PetCategory {
       this.services,
       required this.startFrom});
 
-  factory PetCategory.fromSnapshot(DocumentSnapshot snapshot) {
-    return PetCategory(
+  factory PetCategoryModel.fromSnapshot(DocumentSnapshot snapshot) {
+    return PetCategoryModel(
         id: snapshot.id,
         sequence: snapshot['sequence'],
         isActive: snapshot['is_active'],
@@ -26,8 +26,8 @@ class PetCategory {
         startFrom: snapshot['start_from']);
   }
 
-  factory PetCategory.fromJson(String id, Map<String, dynamic> json) {
-    return PetCategory(
+  factory PetCategoryModel.fromJson(String id, Map<String, dynamic> json) {
+    return PetCategoryModel(
         id: id,
         sequence: json['sequence'],
         isActive: json['is_active'],

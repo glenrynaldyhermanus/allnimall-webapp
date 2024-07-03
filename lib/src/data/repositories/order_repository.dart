@@ -16,8 +16,8 @@ class OrderRepository {
   final FirebaseFirestore firestore;
   final AMPreferences preferences;
 
-  ResultFuture<GroomingOrder> createGroomingOrder({
-    required GroomingOrder order,
+  ResultFuture<OrderModel> createGroomingOrder({
+    required OrderModel order,
   }) async {
     try {
       await firestore.collection("order_groomings").add(order.toSnapshot());
@@ -31,25 +31,25 @@ class OrderRepository {
     }
   }
 
-  ResultFuture<List<OrderService>> addServiceToCart({
+  ResultFuture<List<OrderServiceModel>> addServiceToCart({
     required String serviceUid,
     required String categoryName,
     required double fee,
     required String name,
     required int quantity,
-    required List<ServiceAddOn> addOns,
+    required List<ServiceAddOnModel> addOns,
   }) async {
     try {
-      List<OrderService> cartList = [];
+      List<OrderServiceModel> cartList = [];
       if (preferences.storage.containsKey(PrefKey.cart)) {
         var jsonCarts = jsonDecode(preferences.readData(PrefKey.cart)!);
 
         for (var json in jsonCarts) {
-          cartList.add(OrderService.fromJson(json));
+          cartList.add(OrderServiceModel.fromJson(json));
         }
       }
 
-      cartList.add(OrderService(
+      cartList.add(OrderServiceModel(
         serviceUid: serviceUid,
         categoryName: categoryName,
         fee: fee,
@@ -71,7 +71,7 @@ class OrderRepository {
     }
   }
 
-  ResultFuture<List<OrderService>> clearCart() async {
+  ResultFuture<List<OrderServiceModel>> clearCart() async {
     try {
       preferences.deleteSecureData(PrefKey.cart);
       return const Right([]);
@@ -83,15 +83,15 @@ class OrderRepository {
     }
   }
 
-  ResultFuture<List<OrderService>> getCart() async {
+  ResultFuture<List<OrderServiceModel>> getCart() async {
     try {
-      List<OrderService> cartList = [];
+      List<OrderServiceModel> cartList = [];
 
       if (preferences.storage.containsKey(PrefKey.cart)) {
         var jsonCarts = jsonDecode(preferences.readData(PrefKey.cart)!);
 
         for (var json in jsonCarts) {
-          cartList.add(OrderService.fromJson(json));
+          cartList.add(OrderServiceModel.fromJson(json));
         }
       }
 

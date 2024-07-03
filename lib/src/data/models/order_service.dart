@@ -3,16 +3,16 @@ import 'dart:convert';
 import 'package:allnimall_web/src/core/loggers/logger.dart';
 import 'package:allnimall_web/src/data/models/service_add_on.dart';
 
-class OrderService {
+class OrderServiceModel {
   String? id;
   String serviceUid;
   String categoryName;
   double fee;
   String name;
   int quantity;
-  List<ServiceAddOn> addOns;
+  List<ServiceAddOnModel> addOns;
 
-  OrderService({
+  OrderServiceModel({
     this.id,
     required this.serviceUid,
     required this.categoryName,
@@ -22,8 +22,8 @@ class OrderService {
     this.addOns = const [],
   });
 
-  factory OrderService.fromJson(Map<String, dynamic> json) {
-    return OrderService(
+  factory OrderServiceModel.fromJson(Map<String, dynamic> json) {
+    return OrderServiceModel(
       serviceUid: json['service_uid'],
       categoryName: json['category_name'],
       fee: json['fee'],
@@ -32,7 +32,7 @@ class OrderService {
       addOns: json['add_ons'] == null
           ? []
           : (json['add_ons'] as List).map((jsonAddon) {
-              return ServiceAddOn.fromJsonWithId(jsonAddon['id'], jsonAddon);
+              return ServiceAddOnModel.fromJsonWithId(jsonAddon['id'], jsonAddon);
             }).toList(),
     );
   }
