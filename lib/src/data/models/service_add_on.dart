@@ -21,7 +21,7 @@ class ServiceAddOnModel {
 
     return ServiceAddOnModel(
       id: snapshot.id,
-      fee: data['fee'],
+      fee: data['fee'].toDouble(),
       isActive: data['is_active'],
       name: data['name'],
       sequence: data['sequence'],
@@ -31,7 +31,7 @@ class ServiceAddOnModel {
   factory ServiceAddOnModel.fromJsonWithId(String id, Map<String, dynamic> json) {
     return ServiceAddOnModel(
       id: id,
-      fee: json['fee'],
+      fee: json['fee'].toDouble(),
       isActive: json['is_active'],
       name: json['name'],
       sequence: json['sequence'],

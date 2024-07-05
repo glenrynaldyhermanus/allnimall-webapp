@@ -6,6 +6,7 @@ import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/objects/grooming_schedule.dart';
 import 'package:allnimall_web/src/data/objects/personal_information.dart';
 import 'package:allnimall_web/src/data/providers/cart/cart_provider.dart';
+import 'package:allnimall_web/src/data/providers/cart/cart_provider_state.dart';
 import 'package:allnimall_web/src/data/providers/order/order_provider.dart';
 import 'package:allnimall_web/src/data/providers/order/order_provider_state.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
@@ -218,121 +219,119 @@ class _ServiceCardState extends ConsumerState<ServiceCard> {
         shadowColor: Colors.black26,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: cartProviderState.when(
-            initial: () => Container(),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            success: (data) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          child: cartProviderState == CartProviderState.loading()
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: GeoramaText(
-                        carts.isNotEmpty
-                            ? ' ${carts.length} layanan terpilih'
-                            : 'Pilih layanan',
-                        fontSize: 16,
-                      ),
-                    ),
-                    const Gap(16),
-                    const Icon(Icons.chevron_right)
-                  ],
-                ),
-                if (carts.isNotEmpty)
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        ...List.generate(
-                          carts.length,
-                          (index) => Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    flex: 4,
-                                    child:
-                                        GeoramaText(carts[index].categoryName),
-                                  ),
-                                  const Expanded(
-                                      flex: 1, child: GeoramaText(" | ")),
-                                  Expanded(
-                                    flex: 8,
-                                    child: Row(
-                                      children: [
-                                        GeoramaText(carts[index].name.trim()),
-                                        GeoramaText(
-                                            ' x ${carts[index].quantity}'),
-                                      ],
-                                    ),
-                                  ),
-                                  GeoramaText(
-                                      countCartsServiceAmount(carts[index])
-                                          .toRupiahString()),
-                                ],
-                              ),
-                              if (carts[index].addOns.isNotEmpty)
-                                ...List.generate(
-                                    carts[index].addOns.length,
-                                    (aIndex) => Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 4),
-                                          child: GeoramaText(
-                                              ' + ${carts[index].addOns[aIndex].name}'),
-                                        ))
-                            ],
+                        Expanded(
+                          child: GeoramaText(
+                            carts.isNotEmpty
+                                ? ' ${carts.length} layanan terpilih'
+                                : 'Pilih layanan',
+                            fontSize: 16,
                           ),
                         ),
-                        const Gap(8),
-                        const Row(
+                        const Gap(16),
+                        const Icon(Icons.chevron_right)
+                      ],
+                    ),
+                    if (carts.isNotEmpty)
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 16, right: 16, top: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(flex: 2, child: SizedBox()),
-                            Expanded(
-                                child: StyledDivider(
-                              height: 4,
-                              thickness: 1,
-                              lineStyle: DividerLineStyle.dashed,
-                            ))
-                          ],
-                        ),
-                        const Gap(8),
-                        Row(
-                          children: [
-                            const Expanded(
-                                child: GeoramaText(
-                              'Total',
-                              fontWeight: FontWeight.bold,
-                            )),
-                            GeoramaText(
-                              countCartsTotalAmount(carts).toRupiahString(),
-                              fontWeight: FontWeight.bold,
-                            )
-                          ],
-                        ),
-                        const Gap(8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            AllnimallPrimaryButton(
-                              'Hapus Cart',
-                              width: 140,
-                              height: 32,
-                              onPressed: () {
-                                ref.read(cartProvider.notifier).clearCart();
-                              },
+                            ...List.generate(
+                              carts.length,
+                              (index) => Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 4,
+                                        child: GeoramaText(
+                                            carts[index].categoryName),
+                                      ),
+                                      const Expanded(
+                                          flex: 1, child: GeoramaText(" | ")),
+                                      Expanded(
+                                        flex: 8,
+                                        child: Row(
+                                          children: [
+                                            GeoramaText(
+                                                carts[index].name.trim()),
+                                            GeoramaText(
+                                                ' x ${carts[index].quantity}'),
+                                          ],
+                                        ),
+                                      ),
+                                      GeoramaText(
+                                          countCartsServiceAmount(carts[index])
+                                              .toRupiahString()),
+                                    ],
+                                  ),
+                                  if (carts[index].addOns.isNotEmpty)
+                                    ...List.generate(
+                                        carts[index].addOns.length,
+                                        (aIndex) => Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 4),
+                                              child: GeoramaText(
+                                                  ' + ${carts[index].addOns[aIndex].name}'),
+                                            ))
+                                ],
+                              ),
+                            ),
+                            const Gap(8),
+                            const Row(
+                              children: [
+                                Expanded(flex: 2, child: SizedBox()),
+                                Expanded(
+                                    child: StyledDivider(
+                                  height: 4,
+                                  thickness: 1,
+                                  lineStyle: DividerLineStyle.dashed,
+                                ))
+                              ],
+                            ),
+                            const Gap(8),
+                            Row(
+                              children: [
+                                const Expanded(
+                                    child: GeoramaText(
+                                  'Total',
+                                  fontWeight: FontWeight.bold,
+                                )),
+                                GeoramaText(
+                                  countCartsTotalAmount(carts).toRupiahString(),
+                                  fontWeight: FontWeight.bold,
+                                )
+                              ],
+                            ),
+                            const Gap(8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                AllnimallPrimaryButton(
+                                  'Hapus Cart',
+                                  width: 140,
+                                  height: 32,
+                                  onPressed: () {
+                                    ref.read(cartProvider.notifier).clearCart();
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
-            error: (message) => Container(),
-          ),
+                      ),
+                  ],
+                ),
         ),
       ),
     );

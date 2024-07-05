@@ -57,10 +57,19 @@ class ServiceRepository {
           .orderBy('sequence', descending: false)
           .get();
 
-      final List<ServiceModel> data =
-          queryService.docs.map((doc) => ServiceModel.fromSnapshot(doc)).toList();
+      print('OUT >> 1');
+
+      final List<ServiceModel> data = queryService.docs
+          .map((doc) => ServiceModel.fromSnapshot(doc))
+          .toList();
+
+      print('OUT >> 2');
 
       for (ServiceModel service in data) {
+        print('OUT >> service ${service.name}');
+
+        print('OUT >> service 1');
+
         final queryAddOn = await firestore
             .collection('services')
             .doc(service.id)
@@ -68,11 +77,17 @@ class ServiceRepository {
             .orderBy('sequence', descending: false)
             .get();
 
+        print('OUT >> service 2');
+
         final List<ServiceAddOnModel> dataAddOn = queryAddOn.docs
             .map((doc) => ServiceAddOnModel.fromSnapshot(doc))
             .toList();
+
+        print('OUT >> service 3');
         service.addOns = dataAddOn;
       }
+
+      print('OUT >> 3');
 
       return Right(data);
     } catch (e) {

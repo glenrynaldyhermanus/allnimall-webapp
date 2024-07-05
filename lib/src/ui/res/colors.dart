@@ -11,7 +11,7 @@ class AllnimallColors {
 
   static const secondaryAccent = Color(0x4DEF487F);
 
-  static const backgroundPrimary = Color(0x40E6E7F9);
+  static const backgroundPrimary = Color(0xFFF9F9FD);
 
   static const backgroundOverlay = Color(0xFFE6E7F9);
 

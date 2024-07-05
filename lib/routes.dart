@@ -1,3 +1,4 @@
+import 'package:allnimall_web/app/auth/phone_auth_page.dart';
 import 'package:allnimall_web/app/json/get_json_page.dart';
 import 'package:allnimall_web/app/order/detail/order_detail_page.dart';
 import 'package:allnimall_web/app/order/new/customer/personal_information_page.dart';
@@ -51,6 +52,11 @@ final GoRouter router = GoRouter(
           builder: (ctx, state) => const GroomingSchedulePage(),
         ),
       ],
+    ),
+    GoRoute(
+      name: 'phoneAuth',
+      path: '/auth/phone',
+      builder: (ctx, state) => const PhoneAuthPage(),
     ),
     GoRoute(
       name: 'orderDetail',

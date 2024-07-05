@@ -23,7 +23,7 @@ class PetCategoryModel {
         sequence: snapshot['sequence'],
         isActive: snapshot['is_active'],
         name: snapshot['name'],
-        startFrom: snapshot['start_from']);
+        startFrom: snapshot['start_from'].toDouble());
   }
 
   factory PetCategoryModel.fromJson(String id, Map<String, dynamic> json) {
@@ -32,7 +32,7 @@ class PetCategoryModel {
         sequence: json['sequence'],
         isActive: json['is_active'],
         name: json['name'],
-        startFrom: json['start_from']);
+        startFrom: json['start_from'].toDouble());
   }
 
   Map<String, dynamic> toJson() {
