@@ -6,31 +6,18 @@ import 'package:allnimall_web/app/order/new/new_order_page.dart';
 import 'package:allnimall_web/app/order/new/pet_categories_page.dart';
 import 'package:allnimall_web/app/order/new/schedule/grooming_schedule_page.dart';
 import 'package:allnimall_web/app/order/new/services_page.dart';
-import 'package:allnimall_web/src/core/injections/application_module.dart';
-import 'package:allnimall_web/src/data/blocs/order/order_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (ctx, state) => MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => locator<OrderBloc>()),
-        ],
-        child: const NewOrderPage(),
-      ),
+      builder: (ctx, state) => const NewOrderPage(),
     ),
     GoRoute(
       name: 'newOrder',
       path: '/order/new',
-      builder: (ctx, state) => MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => locator<OrderBloc>()),
-        ],
-        child: const NewOrderPage(),
-      ),
+      builder: (ctx, state) => const NewOrderPage(),
       routes: [
         GoRoute(
           name: 'selectCategory',
@@ -68,12 +55,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: 'orderDetail',
       path: '/order/detail',
-      builder: (ctx, state) => MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => locator<OrderBloc>()),
-        ],
-        child: const OrderDetailPage(),
-      ),
+      builder: (ctx, state) => const OrderDetailPage(),
     ),
     GoRoute(
       path: '/test/json',

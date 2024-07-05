@@ -14,13 +14,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CreateGroomingOrder
-    extends UsecaseWithParams<OrderModel, CreateGroomingOrderParams> {
+    extends UsecaseWithParams<List<OrderModel>, CreateGroomingOrderParams> {
   const CreateGroomingOrder(this._repo);
 
   final OrderRepository _repo;
 
   @override
-  ResultFuture<OrderModel> call(CreateGroomingOrderParams params) =>
+  ResultFuture<List<OrderModel>> call(CreateGroomingOrderParams params) =>
       _repo.createGroomingOrder(
           order: OrderModel(
               amount: countCartsTotalAmount(params.carts),

@@ -16,13 +16,13 @@ class OrderRepository {
   final FirebaseFirestore firestore;
   final AMPreferences preferences;
 
-  ResultFuture<OrderModel> createGroomingOrder({
+  ResultFuture<List<OrderModel>> createGroomingOrder({
     required OrderModel order,
   }) async {
     try {
       await firestore.collection("order_groomings").add(order.toSnapshot());
       await firestore.collection("orders").add(order.toSnapshot());
-      return Right(order);
+      return Right([order]);
     } catch (e) {
       logger.e("createGroomingOrder => $e");
       return Left(CacheFailure(

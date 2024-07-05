@@ -3,7 +3,6 @@ import 'package:allnimall_web/src/data/objects/menu.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_home.dart';
 import 'package:allnimall_web/src/ui/layouts/allnimall_scaffold.dart';
 import 'package:allnimall_web/src/ui/layouts/responsive_layout.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,17 +14,14 @@ class AppPage extends StatefulWidget {
 }
 
 class _AppPageState extends State<AppPage> {
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     // try {
     //   print('FirebaseAuth.instance.currentUser start');
     //   var user = FirebaseAuth.instance.currentUser;

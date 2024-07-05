@@ -2,19 +2,17 @@ import 'package:allnimall_web/src/core/extensions/double_ext.dart';
 import 'package:allnimall_web/src/core/extensions/widget_iterable_ext.dart';
 import 'package:allnimall_web/src/core/utils/functions/count_carts_service_amount.dart';
 import 'package:allnimall_web/src/core/utils/functions/count_carts_total_amount.dart';
-import 'package:allnimall_web/src/data/blocs/order/order_bloc.dart';
-import 'package:allnimall_web/src/data/blocs/order/order_event.dart';
-import 'package:allnimall_web/src/data/blocs/order/order_state.dart';
 import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/objects/grooming_schedule.dart';
 import 'package:allnimall_web/src/data/objects/personal_information.dart';
 import 'package:allnimall_web/src/data/providers/cart/cart_provider.dart';
+import 'package:allnimall_web/src/data/providers/order/order_provider.dart';
+import 'package:allnimall_web/src/data/providers/order/order_provider_state.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
 import 'package:allnimall_web/src/ui/components/button/allnimall_primary_button.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
 import 'package:allnimall_web/src/ui/res/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
@@ -22,20 +20,27 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:styled_divider/styled_divider.dart';
 
-class NewOrderPage extends StatefulWidget {
+class NewOrderPage extends ConsumerStatefulWidget {
   const NewOrderPage({Key? key}) : super(key: key);
 
   @override
-  State<NewOrderPage> createState() => _NewOrderPageState();
+  ConsumerState<NewOrderPage> createState() => _NewOrderPageState();
 }
 
-class _NewOrderPageState extends State<NewOrderPage> {
+class _NewOrderPageState extends ConsumerState<NewOrderPage> {
   List<OrderServiceModel>? carts;
   PersonalInformation? personalInfo;
   GroomingSchedule? groomingSchedule;
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(orderProvider, (prev, next) {
+      if (next.data != null) {
+        context.pushNamed('orderDetail');
+      }
+    });
+    final orderProviderState = ref.watch(orderProvider);
+
     return Scaffold(
       backgroundColor: AllnimallColors.backgroundPrimary,
       appBar: const AppBarCustomer(title: 'Pet Grooming'),
@@ -70,19 +75,9 @@ class _NewOrderPageState extends State<NewOrderPage> {
                     ],
                   ),
                 ),
-                BlocConsumer(
-                    bloc: context.read<OrderBloc>(),
-                    listener: (context, state) {
-                      if (state is OrderCreatedState) {
-                        context.pushNamed('orderDetail');
-                      }
-                    },
-                    builder: (context, state) {
-                      if (state is OrderLoadingState) {
-                        return const CircularProgressIndicator();
-                      }
-
-                      return AllnimallPrimaryButton(
+                orderProviderState == OrderProviderState.loading()
+                    ? const CircularProgressIndicator()
+                    : AllnimallPrimaryButton(
                         'Panggil groomer',
                         outsidePadding: const EdgeInsets.all(24),
                         onPressed: () {
@@ -99,15 +94,13 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                 fontSize: 16.0);
                             return;
                           } else {
-                            context.read<OrderBloc>().add(
-                                CreateGroomingOrderEvent(
-                                    carts: carts!,
-                                    personalInformation: personalInfo!,
-                                    groomingSchedule: groomingSchedule!));
+                            ref
+                                .read(orderProvider.notifier)
+                                .createGroomingOrder(
+                                    personalInfo!, groomingSchedule!, carts!);
                           }
                         },
-                      );
-                    })
+                      ),
               ],
             ),
           ),
