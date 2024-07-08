@@ -1,25 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'add_service_to_cart.dart';
+part of 'remove_service_from_cart.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$addServiceToCartHash() => r'dbb00039c535d4ac7a4d41657f2af93a9d22e36b';
+String _$removeServiceFromCartHash() =>
+    r'afe6ebc33623e5b1f08726fc322b32f79435a725';
 
-/// See also [addServiceToCart].
-@ProviderFor(addServiceToCart)
-final addServiceToCartProvider = AutoDisposeProvider<AddServiceToCart>.internal(
-  addServiceToCart,
-  name: r'addServiceToCartProvider',
+/// See also [removeServiceFromCart].
+@ProviderFor(removeServiceFromCart)
+final removeServiceFromCartProvider =
+    AutoDisposeProvider<RemoveServiceFromCart>.internal(
+  removeServiceFromCart,
+  name: r'removeServiceFromCartProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$addServiceToCartHash,
+      : _$removeServiceFromCartHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef AddServiceToCartRef = AutoDisposeProviderRef<AddServiceToCart>;
+typedef RemoveServiceFromCartRef
+    = AutoDisposeProviderRef<RemoveServiceFromCart>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -6,7 +6,7 @@ part of 'fetch_services.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fetchServicesHash() => r'25e20ca7d876b8764d6d7095e8a69443c2a97962';
+String _$fetchServicesHash() => r'3bbf262f51ede314a0de1f2177169584f2150764';
 
 /// See also [fetchServices].
 @ProviderFor(fetchServices)

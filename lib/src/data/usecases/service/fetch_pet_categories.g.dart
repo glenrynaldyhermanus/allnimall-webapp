@@ -7,7 +7,7 @@ part of 'fetch_pet_categories.dart';
 // **************************************************************************
 
 String _$fetchPetCategoriesHash() =>
-    r'70390777c16707d159716e4f7197ae4d13f16c12';
+    r'c39fbdc9ab5e1960f73ab51dfa19f19859a69ef9';
 
 /// See also [fetchPetCategories].
 @ProviderFor(fetchPetCategories)
