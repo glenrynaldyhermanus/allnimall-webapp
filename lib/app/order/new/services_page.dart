@@ -6,9 +6,9 @@ import 'package:allnimall_web/src/core/utils/functions/is_service_exists_in_cart
 import 'package:allnimall_web/src/core/utils/functions/run_on_page_load.dart';
 import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/models/service.dart';
-import 'package:allnimall_web/src/data/providers/cart/cart_provider.dart';
-import 'package:allnimall_web/src/data/providers/cart/cart_provider_state.dart';
-import 'package:allnimall_web/src/data/providers/grooming/service/service_provider.dart';
+import 'package:allnimall_web/src/data/providers/cart/cart_service_provider.dart';
+import 'package:allnimall_web/src/data/providers/cart/cart_service_state.dart';
+import 'package:allnimall_web/src/data/providers/grooming/service/service_service_provider.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
 import 'package:allnimall_web/src/ui/components/bottomsheet/service_add_on_sheet.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
@@ -38,15 +38,15 @@ class _ServicesPageState extends ConsumerState<ServicesPage> {
       context.pushNamed('newOrder');
     } else {
       onPageLoaded(() => ref
-          .read(serviceProvider.notifier)
+          .read(serviceServiceProvider.notifier)
           .fetchPetService(widget.categoryUid!));
-      onPageLoaded(() => ref.read(cartProvider.notifier).getCart());
+      onPageLoaded(() => ref.read(cartServiceProvider.notifier).getCart());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final serviceProviderState = ref.watch(serviceProvider);
+    final serviceProviderState = ref.watch(serviceServiceProvider);
 
     return Scaffold(
       backgroundColor: AllnimallColors.backgroundPrimary,
@@ -100,7 +100,7 @@ class OrderButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cartProviderState = ref.watch(cartProvider);
+    final cartProviderState = ref.watch(cartServiceProvider);
 
     List<OrderServiceModel> carts = [];
     if (cartProviderState.data != null) {
@@ -127,7 +127,7 @@ class OrderButton extends ConsumerWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: cartProviderState == CartProviderState.loading()
+            child: cartProviderState == CartServiceState.loading()
                 ? const Center(child: CircularProgressIndicator())
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -177,7 +177,7 @@ class ServiceRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cartProviderState = ref.watch(cartProvider);
+    final cartProviderState = ref.watch(cartServiceProvider);
 
     List<OrderServiceModel> carts = [];
     if (cartProviderState.data != null) {
@@ -242,7 +242,8 @@ class ServiceRow extends ConsumerWidget {
                         carts: carts,
                       );
                     },
-                  ).then((value) => ref.read(cartProvider.notifier).getCart());
+                  ).then((value) =>
+                      ref.read(cartServiceProvider.notifier).getCart());
                 },
                 style: isServiceExistsInCart(carts, service.id)
                     ? FilledButton.styleFrom(

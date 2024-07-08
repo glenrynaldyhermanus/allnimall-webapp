@@ -2,7 +2,7 @@ import 'package:allnimall_web/src/core/extensions/double_ext.dart';
 import 'package:allnimall_web/src/core/extensions/widget_iterable_ext.dart';
 import 'package:allnimall_web/src/core/utils/functions/run_on_page_load.dart';
 import 'package:allnimall_web/src/data/models/pet_category.dart';
-import 'package:allnimall_web/src/data/providers/grooming/category/category_provider.dart';
+import 'package:allnimall_web/src/data/providers/grooming/category/category_service_provider.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
 import 'package:allnimall_web/src/ui/components/bottomsheet/service_category_sheet.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
@@ -26,12 +26,12 @@ class _PetCategoriesPageState extends ConsumerState<PetCategoriesPage> {
     // TODO: implement initState
     super.initState();
 
-    onPageLoaded(() => ref.read(categoryProvider.notifier).fetchPetCategory());
+    onPageLoaded(() => ref.read(categoryServiceProvider.notifier).fetchPetCategory());
   }
 
   @override
   Widget build(BuildContext context) {
-    final categoryProviderState = ref.watch(categoryProvider);
+    final categoryProviderState = ref.watch(categoryServiceProvider);
 
     return Scaffold(
       backgroundColor: AllnimallColors.backgroundPrimary,

@@ -1,32 +1,32 @@
 // ignore_for_file: avoid_manual_providers_as_generated_provider_dependency
-import 'package:allnimall_web/src/data/providers/grooming/service/service_provider_state.dart';
+import 'package:allnimall_web/src/data/providers/grooming/service/service_service_state.dart';
 import 'package:allnimall_web/src/data/usecases/service/fetch_services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'service_provider.g.dart';
+part 'service_service_provider.g.dart';
 
 @riverpod
-class Service extends _$Service {
+class ServiceService extends _$ServiceService {
   late FetchServices _fetchServices;
 
   @override
-  ServiceProviderState build() {
+  ServiceServiceState build() {
     _fetchServices = ref.watch(fetchServicesProvider);
-    return ServiceProviderState.initial();
+    return ServiceServiceState.initial();
   }
 
   Future<void> fetchPetService(String categoryUid) async {
-    state = ServiceProviderState.loading();
+    state = ServiceServiceState.loading();
 
     final result =
         await _fetchServices(FetchServicesParams(categoryUid: categoryUid));
 
     result.fold(
       (failure) {
-        state = ServiceProviderState.error(failure.message);
+        state = ServiceServiceState.error(failure.message);
       },
       (data) {
-        state = ServiceProviderState.success(data);
+        state = ServiceServiceState.success(data);
       },
     );
   }

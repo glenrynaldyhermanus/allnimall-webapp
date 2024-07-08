@@ -5,10 +5,10 @@ import 'package:allnimall_web/src/core/utils/functions/count_carts_total_amount.
 import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/objects/grooming_schedule.dart';
 import 'package:allnimall_web/src/data/objects/personal_information.dart';
-import 'package:allnimall_web/src/data/providers/cart/cart_provider.dart';
-import 'package:allnimall_web/src/data/providers/cart/cart_provider_state.dart';
-import 'package:allnimall_web/src/data/providers/order/order_provider.dart';
-import 'package:allnimall_web/src/data/providers/order/order_provider_state.dart';
+import 'package:allnimall_web/src/data/providers/cart/cart_service_provider.dart';
+import 'package:allnimall_web/src/data/providers/cart/cart_service_state.dart';
+import 'package:allnimall_web/src/data/providers/order/order_service_provider.dart';
+import 'package:allnimall_web/src/data/providers/order/order_service_state.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
 import 'package:allnimall_web/src/ui/components/button/allnimall_primary_button.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
@@ -35,12 +35,12 @@ class _NewOrderPageState extends ConsumerState<NewOrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(orderProvider, (prev, next) {
+    ref.listen(orderServiceProvider, (prev, next) {
       if (next.data != null) {
         context.pushNamed('orderDetail');
       }
     });
-    final orderProviderState = ref.watch(orderProvider);
+    final orderProviderState = ref.watch(orderServiceProvider);
 
     return Scaffold(
       backgroundColor: AllnimallColors.backgroundPrimary,
@@ -76,7 +76,7 @@ class _NewOrderPageState extends ConsumerState<NewOrderPage> {
                     ],
                   ),
                 ),
-                orderProviderState == OrderProviderState.loading()
+                orderProviderState == OrderServiceState.loading()
                     ? const CircularProgressIndicator()
                     : AllnimallPrimaryButton(
                         'Panggil groomer',
@@ -96,7 +96,7 @@ class _NewOrderPageState extends ConsumerState<NewOrderPage> {
                             return;
                           } else {
                             ref
-                                .read(orderProvider.notifier)
+                                .read(orderServiceProvider.notifier)
                                 .createGroomingOrder(
                                     personalInfo!, groomingSchedule!, carts!);
                           }
@@ -194,7 +194,7 @@ class ServiceCard extends ConsumerStatefulWidget {
 class _ServiceCardState extends ConsumerState<ServiceCard> {
   @override
   Widget build(BuildContext context) {
-    final cartProviderState = ref.watch(cartProvider);
+    final cartProviderState = ref.watch(cartServiceProvider);
 
     List<OrderServiceModel> carts = [];
     if (cartProviderState.data != null) {
@@ -206,7 +206,7 @@ class _ServiceCardState extends ConsumerState<ServiceCard> {
       onTap: () {
         context
             .pushNamed('selectCategory')
-            .then((value) => ref.read(cartProvider.notifier).getCart());
+            .then((value) => ref.read(cartServiceProvider.notifier).getCart());
       },
       child: Card(
         color: Colors.white,
@@ -219,7 +219,7 @@ class _ServiceCardState extends ConsumerState<ServiceCard> {
         shadowColor: Colors.black26,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: cartProviderState == CartProviderState.loading()
+          child: cartProviderState == CartServiceState.loading()
               ? const Center(child: CircularProgressIndicator())
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,7 +322,9 @@ class _ServiceCardState extends ConsumerState<ServiceCard> {
                                   width: 140,
                                   height: 32,
                                   onPressed: () {
-                                    ref.read(cartProvider.notifier).clearCart();
+                                    ref
+                                        .read(cartServiceProvider.notifier)
+                                        .clearCart();
                                   },
                                 ),
                               ],
