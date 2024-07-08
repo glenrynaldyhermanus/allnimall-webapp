@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_manual_providers_as_generated_provider_dependency
 import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/objects/grooming_schedule.dart';
 import 'package:allnimall_web/src/data/objects/personal_information.dart';
@@ -9,19 +10,11 @@ part 'order_provider.g.dart';
 
 @riverpod
 class Order extends _$Order {
-  Order();
-
-  ///Usecases
-  late final CreateGroomingOrder _createGroomingOrder;
-
-  void init(
-    CreateGroomingOrder createGroomingOrder,
-  ) {
-    _createGroomingOrder = createGroomingOrder;
-  }
+  late CreateGroomingOrder _createGroomingOrder;
 
   @override
   OrderProviderState build() {
+    _createGroomingOrder = ref.watch(createGroomingOrderProvider);
     return OrderProviderState.initial();
   }
 

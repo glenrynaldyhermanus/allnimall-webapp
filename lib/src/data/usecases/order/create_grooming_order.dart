@@ -12,6 +12,9 @@ import 'package:allnimall_web/src/data/objects/personal_location.dart';
 import 'package:allnimall_web/src/data/repositories/order_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'create_grooming_order.g.dart';
 
 class CreateGroomingOrder
     extends UsecaseWithParams<List<OrderModel>, CreateGroomingOrderParams> {
@@ -69,4 +72,10 @@ class CreateGroomingOrderParams {
   final PersonalInformation personalInfo;
   final List<OrderServiceModel> carts;
   final GroomingSchedule groomingSchedule;
+}
+
+@riverpod
+CreateGroomingOrder createGroomingOrder(CreateGroomingOrderRef ref) {
+  final repo = ref.watch(orderRepositoryProvider);
+  return CreateGroomingOrder(repo);
 }

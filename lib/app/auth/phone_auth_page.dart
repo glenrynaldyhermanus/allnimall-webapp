@@ -36,11 +36,16 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                     AllnimallPhoneTextField(
                       'No Handphone',
                       hint: '8XX-XXXX-XXXX',
+                      needOtp: true,
                       onChanged: (value) {
                         phone = value;
                       },
                     ),
-                    AllnimallOtpTextField('Kode OTP', onChanged: (value) {}),
+                    AllnimallOtpTextField(
+                      'Kode OTP',
+                      hint: " * * * * * * ",
+                      onChanged: (value) {},
+                    ),
                   ].divide(const Gap(16)),
                 ),
               ),

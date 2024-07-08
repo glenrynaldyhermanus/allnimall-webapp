@@ -354,12 +354,16 @@ class _CustomerCardState extends State<CustomerCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.pushNamed('customerInformation').then((value) => setState(() {
-              if (value != null && value is PersonalInformation) {
-                personalInfo = value;
-                widget.onSet(value);
-              }
-            }));
+        context.pushNamed('phoneAuth').then(
+              (value) => setState(
+                () {
+                  if (value != null && value is PersonalInformation) {
+                    personalInfo = value;
+                    widget.onSet(value);
+                  }
+                },
+              ),
+            );
       },
       child: Card(
         color: Colors.white,

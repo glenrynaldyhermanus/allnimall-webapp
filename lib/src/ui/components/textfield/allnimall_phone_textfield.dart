@@ -1,7 +1,6 @@
 import 'package:allnimall_web/src/core/extensions/widget_iterable_ext.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
 import 'package:allnimall_web/src/ui/res/colors.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -46,7 +45,7 @@ class _AllnimallPhoneTextFieldState extends State<AllnimallPhoneTextField> {
 
   // final FirebaseAuth _auth = FirebaseAuth.instance;
   // String? _verificationId;
-
+  //
   // Future<void> _verifyPhoneNumber() async {
   //   await _auth.verifyPhoneNumber(
   //     phoneNumber: '+62 ${}',

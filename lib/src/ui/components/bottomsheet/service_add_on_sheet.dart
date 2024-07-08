@@ -1,5 +1,6 @@
 import 'package:allnimall_web/src/core/extensions/double_ext.dart';
 import 'package:allnimall_web/src/core/extensions/widget_iterable_ext.dart';
+import 'package:allnimall_web/src/core/utils/functions/is_addon_exists_in_cart.dart';
 import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/models/service.dart';
 import 'package:allnimall_web/src/data/models/service_add_on.dart';
@@ -216,6 +217,10 @@ class _SheetContentState extends ConsumerState<SheetContent> {
                 (index) => ServiceAddOnsRow(
                   service: widget.service,
                   serviceAddOn: widget.service.addOns![index],
+                  initialValue: widget.selectedOrder == null
+                      ? false
+                      : isAddOnExistsInCart(widget.selectedOrder!.addOns,
+                          widget.service.addOns![index].id!),
                   onSelected: (selected) {
                     if (selected) {
                       addOns.add(widget.service.addOns![index]);
@@ -250,7 +255,7 @@ class _SheetContentState extends ConsumerState<SheetContent> {
                 textSize: 14,
                 step: 1,
                 count: quantity.toDouble(),
-                minCount: 1,
+                minCount: 0,
                 maxCount: 8,
                 incrementIcon: const Icon(
                   Icons.add_circle,
@@ -273,13 +278,19 @@ class _SheetContentState extends ConsumerState<SheetContent> {
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: ElevatedButton(
             onPressed: () {
-              ref.read(cartProvider.notifier).addServiceToCart(
-                  widget.service.id,
-                  widget.service.categoryName,
-                  widget.service.fee,
-                  widget.service.name,
-                  quantity,
-                  addOns);
+              if (quantity == 0) {
+                ref
+                    .read(cartProvider.notifier)
+                    .removeServiceFromCart(widget.service.id);
+              } else {
+                ref.read(cartProvider.notifier).addServiceToCart(
+                    widget.service.id,
+                    widget.service.categoryName,
+                    widget.service.fee,
+                    widget.service.name,
+                    quantity,
+                    addOns);
+              }
 
               context.pop();
             },
@@ -311,10 +322,12 @@ class ServiceAddOnsRow extends StatefulWidget {
     required this.service,
     required this.serviceAddOn,
     required this.onSelected,
+    this.initialValue = false,
   });
 
   final ServiceModel service;
   final ServiceAddOnModel serviceAddOn;
+  final bool initialValue;
   final Function(bool selected) onSelected;
 
   @override
@@ -323,6 +336,13 @@ class ServiceAddOnsRow extends StatefulWidget {
 
 class _ServiceAddOnsRowState extends State<ServiceAddOnsRow> {
   bool isSelected = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isSelected = widget.initialValue;
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:allnimall_web/src/core/injections/application_module.dart';
 import 'package:allnimall_web/src/core/loggers/logger.dart';
 import 'package:allnimall_web/src/core/utils/errors/failures.dart';
 import 'package:allnimall_web/src/core/utils/typedefs.dart';
@@ -7,6 +8,9 @@ import 'package:allnimall_web/src/data/models/service_add_on.dart';
 import 'package:allnimall_web/src/data/models/service_category.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'service_repository.g.dart';
 
 class ServiceRepository {
   const ServiceRepository({required this.firestore});
@@ -57,19 +61,11 @@ class ServiceRepository {
           .orderBy('sequence', descending: false)
           .get();
 
-      print('OUT >> 1');
-
       final List<ServiceModel> data = queryService.docs
           .map((doc) => ServiceModel.fromSnapshot(doc))
           .toList();
 
-      print('OUT >> 2');
-
       for (ServiceModel service in data) {
-        print('OUT >> service ${service.name}');
-
-        print('OUT >> service 1');
-
         final queryAddOn = await firestore
             .collection('services')
             .doc(service.id)
@@ -77,17 +73,12 @@ class ServiceRepository {
             .orderBy('sequence', descending: false)
             .get();
 
-        print('OUT >> service 2');
-
         final List<ServiceAddOnModel> dataAddOn = queryAddOn.docs
             .map((doc) => ServiceAddOnModel.fromSnapshot(doc))
             .toList();
 
-        print('OUT >> service 3');
         service.addOns = dataAddOn;
       }
-
-      print('OUT >> 3');
 
       return Right(data);
     } catch (e) {
@@ -97,4 +88,10 @@ class ServiceRepository {
           statusCode: 500));
     }
   }
+}
+
+@riverpod
+ServiceRepository serviceRepository(ServiceRepositoryRef ref) {
+  final firestore = ref.watch(firebaseFirestoreProvider);
+  return ServiceRepository(firestore: firestore);
 }

@@ -2,10 +2,12 @@ import 'package:allnimall_web/src/core/extensions/double_ext.dart';
 import 'package:allnimall_web/src/core/extensions/widget_iterable_ext.dart';
 import 'package:allnimall_web/src/core/utils/functions/count_carts_total_amount.dart';
 import 'package:allnimall_web/src/core/utils/functions/count_carts_total_pet.dart';
+import 'package:allnimall_web/src/core/utils/functions/is_service_exists_in_cart.dart';
 import 'package:allnimall_web/src/core/utils/functions/run_on_page_load.dart';
 import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/models/service.dart';
 import 'package:allnimall_web/src/data/providers/cart/cart_provider.dart';
+import 'package:allnimall_web/src/data/providers/cart/cart_provider_state.dart';
 import 'package:allnimall_web/src/data/providers/grooming/service/service_provider.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
 import 'package:allnimall_web/src/ui/components/bottomsheet/service_add_on_sheet.dart';
@@ -38,12 +40,14 @@ class _ServicesPageState extends ConsumerState<ServicesPage> {
       onPageLoaded(() => ref
           .read(serviceProvider.notifier)
           .fetchPetService(widget.categoryUid!));
+      onPageLoaded(() => ref.read(cartProvider.notifier).getCart());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final serviceProviderState = ref.watch(serviceProvider);
+
     return Scaffold(
       backgroundColor: AllnimallColors.backgroundPrimary,
       appBar: const AppBarCustomer(title: 'Pilih Servis'),
@@ -53,32 +57,34 @@ class _ServicesPageState extends ConsumerState<ServicesPage> {
           loading: () => const Center(
             child: CircularProgressIndicator(),
           ),
-          success: (data) => Center(
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 600),
-              child: ListView(
-                children: [
-                  const Gap(24),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                    child: GeoramaText(
-                      'Pilih servis untuk ${data[0].categoryName}-mu',
-                      fontSize: 16,
+          success: (data) {
+            return Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: ListView(
+                  children: [
+                    const Gap(24),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                      child: GeoramaText(
+                        'Pilih servis untuk ${data[0].categoryName}-mu',
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                  const Gap(8),
-                  ...List.generate(
-                    data.length,
-                    (index) => ServiceRow(service: data[index]),
-                  )
-                      .divide(const Divider(
-                          color: AllnimallColors.backgroundOverlay))
-                      .around(const Divider(
-                          color: AllnimallColors.backgroundOverlay))
-                ],
+                    const Gap(8),
+                    ...List.generate(
+                      data.length,
+                      (index) => ServiceRow(service: data[index]),
+                    )
+                        .divide(const Divider(
+                            color: AllnimallColors.backgroundOverlay))
+                        .around(const Divider(
+                            color: AllnimallColors.backgroundOverlay))
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
           error: (errorMessage) => Container(),
         ),
       ),
@@ -121,34 +127,31 @@ class OrderButton extends ConsumerWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: cartProviderState.when(
-              initial: () => Container(),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              success: (data) => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GeoramaText(
-                    '${carts.length} services | $totalPet pet',
-                    color: Colors.white,
-                  ),
-                  Row(
+            child: cartProviderState == CartProviderState.loading()
+                ? const Center(child: CircularProgressIndicator())
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GeoramaText(
-                        total.toRupiahString(),
+                        '${carts.length} services | $totalPet pet',
                         color: Colors.white,
                       ),
-                      const Gap(8),
-                      const Icon(
-                        Icons.arrow_circle_right,
-                        color: Colors.white,
-                        size: 20,
+                      Row(
+                        children: [
+                          GeoramaText(
+                            total.toRupiahString(),
+                            color: Colors.white,
+                          ),
+                          const Gap(8),
+                          const Icon(
+                            Icons.arrow_circle_right,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-              error: (message) => Container(),
-            ),
           ),
         ),
       ),
@@ -172,15 +175,6 @@ class ServiceRow extends ConsumerWidget {
     }
   }
 
-  bool isAddedToCart(List<OrderServiceModel> carts, ServiceModel service) {
-    for (var cart in carts) {
-      if (cart.serviceUid == service.id) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cartProviderState = ref.watch(cartProvider);
@@ -190,91 +184,84 @@ class ServiceRow extends ConsumerWidget {
       carts = cartProviderState.data!;
     }
 
-    return cartProviderState.when(
-      initial: () => Container(),
-      loading: () => const Center(child: CircularProgressIndicator()),
-      success: (data) => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-        child: Row(
-          children: [
-            Container(
-              height: 32,
-              width: 32,
-              padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: AllnimallColors.backgroundOverlay,
-              ),
-              child: Center(
-                child: FaIcon(
-                  getIcons(service.type),
-                  size: 12,
-                ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Row(
+        children: [
+          Container(
+            height: 32,
+            width: 32,
+            padding: const EdgeInsets.all(4),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: AllnimallColors.backgroundOverlay,
+            ),
+            child: Center(
+              child: FaIcon(
+                getIcons(service.type),
+                size: 12,
               ),
             ),
-            const Gap(16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GeoramaText(
-                    service.name,
-                    fontSize: 14,
-                  ),
-                  GeoramaText(
-                    service.description,
-                    fontSize: 12,
-                    color: AllnimallColors.textSecondary,
-                  ),
-                ],
-              ),
-            ),
-            const Gap(16),
-            Column(
+          ),
+          const Gap(16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GeoramaText(
-                  service.fee.toRupiahString(),
-                  fontSize: 12,
-                  color: AllnimallColors.secondary,
+                  service.name,
+                  fontSize: 14,
                 ),
-                const Gap(4),
-                OutlinedButton(
-                  onPressed: () async {
-                    await showModalBottomSheet(
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      enableDrag: true,
-                      context: context,
-                      builder: (bottomSheetContext) {
-                        return ServiceAddOnSheet(
-                          service: service,
-                          carts: carts,
-                        );
-                      },
-                    ).then(
-                        (value) => ref.read(cartProvider.notifier).getCart());
-                  },
-                  style: isAddedToCart(carts, service)
-                      ? FilledButton.styleFrom(
-                          backgroundColor: AllnimallColors.primary)
-                      : OutlinedButton.styleFrom(
-                          side:
-                              const BorderSide(color: AllnimallColors.primary),
-                        ),
-                  child: GeoramaText(
-                    isAddedToCart(carts, service) ? 'Edit' : 'Add',
-                    fontSize: 11,
-                    color: isAddedToCart(carts, service)
-                        ? Colors.white
-                        : AllnimallColors.primary,
-                  ),
-                )
+                GeoramaText(
+                  service.description,
+                  fontSize: 12,
+                  color: AllnimallColors.textSecondary,
+                ),
               ],
             ),
-          ],
-        ),
+          ),
+          const Gap(16),
+          Column(
+            children: [
+              GeoramaText(
+                service.fee.toRupiahString(),
+                fontSize: 12,
+                color: AllnimallColors.secondary,
+              ),
+              const Gap(4),
+              OutlinedButton(
+                onPressed: () async {
+                  await showModalBottomSheet(
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    enableDrag: true,
+                    context: context,
+                    builder: (bottomSheetContext) {
+                      return ServiceAddOnSheet(
+                        service: service,
+                        carts: carts,
+                      );
+                    },
+                  ).then((value) => ref.read(cartProvider.notifier).getCart());
+                },
+                style: isServiceExistsInCart(carts, service.id)
+                    ? FilledButton.styleFrom(
+                        backgroundColor: AllnimallColors.primary)
+                    : OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AllnimallColors.primary),
+                      ),
+                child: GeoramaText(
+                  isServiceExistsInCart(carts, service.id) ? 'Edit' : 'Add',
+                  fontSize: 11,
+                  color: isServiceExistsInCart(carts, service.id)
+                      ? Colors.white
+                      : AllnimallColors.primary,
+                ),
+              )
+            ],
+          ),
+        ],
       ),
-      error: (message) => Container(),
     );
   }
 }

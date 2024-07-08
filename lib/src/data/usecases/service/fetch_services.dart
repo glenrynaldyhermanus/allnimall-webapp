@@ -2,6 +2,9 @@ import 'package:allnimall_web/src/core/utils/typedefs.dart';
 import 'package:allnimall_web/src/core/utils/usecase.dart';
 import 'package:allnimall_web/src/data/models/service.dart';
 import 'package:allnimall_web/src/data/repositories/service_repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'fetch_services.g.dart';
 
 class FetchServices
     extends UsecaseWithParams<List<ServiceModel>, FetchServicesParams> {
@@ -22,4 +25,10 @@ class FetchServicesParams {
   const FetchServicesParams.empty() : this(categoryUid: '');
 
   final String categoryUid;
+}
+
+@riverpod
+FetchServices fetchServices(FetchServicesRef ref) {
+  final repo = ref.watch(serviceRepositoryProvider);
+  return FetchServices(repo);
 }
