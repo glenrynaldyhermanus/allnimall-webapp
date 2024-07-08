@@ -4,7 +4,7 @@ import 'package:allnimall_web/src/core/utils/functions/is_addon_exists_in_cart.d
 import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/models/service.dart';
 import 'package:allnimall_web/src/data/models/service_add_on.dart';
-import 'package:allnimall_web/src/data/providers/cart/cart_service_provider.dart';
+import 'package:allnimall_web/src/data/services/cart/cart_service.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
 import 'package:allnimall_web/src/ui/components/text/rocko_text.dart';
 import 'package:allnimall_web/src/ui/res/colors.dart';

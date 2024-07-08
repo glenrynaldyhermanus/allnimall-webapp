@@ -1,12 +1,12 @@
 // ignore_for_file: avoid_manual_providers_as_generated_provider_dependency
-import 'package:allnimall_web/src/data/providers/grooming/service/service_service_state.dart';
+import 'package:allnimall_web/src/data/services/grooming/service/grooming_service_state.dart';
 import 'package:allnimall_web/src/data/usecases/service/fetch_services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'service_service_provider.g.dart';
+part 'grooming_service.g.dart';
 
 @riverpod
-class ServiceService extends _$ServiceService {
+class GroomingService extends _$GroomingService {
   late FetchServices _fetchServices;
 
   @override

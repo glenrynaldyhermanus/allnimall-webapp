@@ -1,16 +1,16 @@
 // ignore_for_file: avoid_manual_providers_as_generated_provider_dependency
 import 'package:allnimall_web/src/data/models/service_add_on.dart';
-import 'package:allnimall_web/src/data/providers/cart/cart_service_state.dart';
+import 'package:allnimall_web/src/data/services/cart/cart_service_state.dart';
 import 'package:allnimall_web/src/data/usecases/order/add_service_to_cart.dart';
 import 'package:allnimall_web/src/data/usecases/order/clear_cart.dart';
 import 'package:allnimall_web/src/data/usecases/order/get_cart.dart';
 import 'package:allnimall_web/src/data/usecases/order/remove_service_from_cart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'cart_service_provider.g.dart';
+part 'cart_service.g.dart';
 
 @riverpod
-class CartService extends _$CartService { 
+class CartService extends _$CartService {
   ///Usecases
   late AddServiceToCart _addServiceToCart;
   late GetCart _getCart;

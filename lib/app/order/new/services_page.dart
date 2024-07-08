@@ -6,9 +6,9 @@ import 'package:allnimall_web/src/core/utils/functions/is_service_exists_in_cart
 import 'package:allnimall_web/src/core/utils/functions/run_on_page_load.dart';
 import 'package:allnimall_web/src/data/models/order_service.dart';
 import 'package:allnimall_web/src/data/models/service.dart';
-import 'package:allnimall_web/src/data/providers/cart/cart_service_provider.dart';
-import 'package:allnimall_web/src/data/providers/cart/cart_service_state.dart';
-import 'package:allnimall_web/src/data/providers/grooming/service/service_service_provider.dart';
+import 'package:allnimall_web/src/data/services/cart/cart_service.dart';
+import 'package:allnimall_web/src/data/services/cart/cart_service_state.dart';
+import 'package:allnimall_web/src/data/services/grooming/service/grooming_service.dart';
 import 'package:allnimall_web/src/ui/components/appbar/appbar_customer.dart';
 import 'package:allnimall_web/src/ui/components/bottomsheet/service_add_on_sheet.dart';
 import 'package:allnimall_web/src/ui/components/text/georama_text.dart';
@@ -38,7 +38,7 @@ class _ServicesPageState extends ConsumerState<ServicesPage> {
       context.pushNamed('newOrder');
     } else {
       onPageLoaded(() => ref
-          .read(serviceServiceProvider.notifier)
+          .read(groomingServiceProvider.notifier)
           .fetchPetService(widget.categoryUid!));
       onPageLoaded(() => ref.read(cartServiceProvider.notifier).getCart());
     }
@@ -46,7 +46,7 @@ class _ServicesPageState extends ConsumerState<ServicesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final serviceProviderState = ref.watch(serviceServiceProvider);
+    final serviceProviderState = ref.watch(groomingServiceProvider);
 
     return Scaffold(
       backgroundColor: AllnimallColors.backgroundPrimary,
